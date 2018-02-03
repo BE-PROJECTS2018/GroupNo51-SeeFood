@@ -2,11 +2,13 @@ package com.example.ubuntu.seefood;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.util.Size;
 import android.view.View;
 import android.widget.Toast;
 
@@ -37,10 +39,13 @@ public class CameraActivity extends Activity {
         }
     }
 
+    // Implementation for "Close" Button in CameraActivity
     public void closeCameraActivity(View view){
         finish();
     }
 
+
+    /******************** Code Related to Runtime Permissions **********************/
     private boolean hasPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED;
@@ -90,4 +95,6 @@ public class CameraActivity extends Activity {
             }
         }
     }
+
+
 }
