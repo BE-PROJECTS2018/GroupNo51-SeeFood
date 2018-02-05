@@ -13,13 +13,17 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Trace;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.util.Size;
+import android.view.KeyEvent;
+import android.view.Surface;
 import android.view.View;
-import android.widget.Toast;
+import android.view.WindowManager;
 
 import com.example.ubuntu.seefood.env.Logger;
 import com.example.ubuntu.seefood.env.ImageUtils;
@@ -32,14 +36,15 @@ import java.nio.ByteBuffer;
  */
 
 /** Main {@code Activity} class for the Camera app. */
-public class CameraActivity extends Activity implements ImageReader.OnImageAvailableListener {
+public abstract class CameraActivity extends Activity implements ImageReader.OnImageAvailableListener {
 
+    /************************** Class members *****************************/
     private static final Logger LOGGER = new Logger();
     private static final int PERMISSIONS_REQUEST = 1;
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
     private View mLayout;
     private boolean useCamera2API;
-    private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
+//    private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
     protected int previewWidth = 0;
     protected int previewHeight = 0;
     private boolean isProcessingFrame = false;
@@ -48,12 +53,14 @@ public class CameraActivity extends Activity implements ImageReader.OnImageAvail
     private int yRowStride;
     private Runnable postInferenceCallback;
     private Runnable imageConverter;
+    private boolean debug = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         mLayout = findViewById(R.id.main_layout);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         if (hasPermission()) {
             setFragment();
@@ -62,10 +69,8 @@ public class CameraActivity extends Activity implements ImageReader.OnImageAvail
         }
     }
 
-    // Implementation for "Close" Button in CameraActivity
-    public void closeCameraActivity(View view){
-        finish();
-    }
+    private Handler handler;
+    private HandlerThread handlerThread;
 
 
     /******************** Code Related to Runtime Permissions **********************/
@@ -133,7 +138,7 @@ public class CameraActivity extends Activity implements ImageReader.OnImageAvail
                                 public void onPreviewSizeChosen(final Size size, final int rotation) {
                                     previewHeight = size.getHeight();
                                     previewWidth = size.getWidth();
-//                                    CameraActivity.this.onPreviewSizeChosen(size, rotation);
+                                    CameraActivity.this.onPreviewSizeChosen(size, rotation);
                                 }
                             },
                             this,
@@ -256,7 +261,7 @@ public class CameraActivity extends Activity implements ImageReader.OnImageAvail
                         }
                     };
 
-            //processImage();
+            processImage();
         } catch (final Exception e) {
             LOGGER.e(e, "Exception!");
             Trace.endSection();
@@ -278,14 +283,138 @@ public class CameraActivity extends Activity implements ImageReader.OnImageAvail
         }
     }
 
+    /***************** Functions (used by/required for) DetectorActivity.java ******************/
+
+    @Override
+    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            debug = !debug;
+            requestRender();
+            //onSetDebug(debug);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void requestRender() {
+        final OverlayView overlay = (OverlayView) findViewById(R.id.debug_overlay);
+        if (overlay != null) {
+            overlay.postInvalidate();
+        }
+    }
+
+    protected int getScreenOrientation() {
+        switch (getWindowManager().getDefaultDisplay().getRotation()) {
+            case Surface.ROTATION_270:
+                return 270;
+            case Surface.ROTATION_180:
+                return 180;
+            case Surface.ROTATION_90:
+                return 90;
+            default:
+                return 0;
+        }
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void addCallback(final OverlayView.DrawCallback callback) {
+        final OverlayView overlay = (OverlayView) findViewById(R.id.debug_overlay);
+        if (overlay != null) {
+            overlay.addCallback(callback);
+        }
+    }
+
+    protected int getLuminanceStride() {
+        return yRowStride;
+    }
+
+    protected byte[] getLuminance() {
+        return yuvBytes[0];
+    }
+
+    protected void readyForNextImage() {
+        if (postInferenceCallback != null) {
+            postInferenceCallback.run();
+        }
+    }
+
+    protected int[] getRgbBytes() {
+        imageConverter.run();
+        return rgbBytes;
+    }
+
+    protected synchronized void runInBackground(final Runnable r) {
+        if (handler != null) {
+            handler.post(r);
+        }
+    }
+
+    @Override
+    public synchronized void onStart() {
+        LOGGER.d("onStart " + this);
+        super.onStart();
+    }
+
+    @Override
+    public synchronized void onResume() {
+        LOGGER.d("onResume " + this);
+        super.onResume();
+
+        handlerThread = new HandlerThread("inference");
+        handlerThread.start();
+        handler = new Handler(handlerThread.getLooper());
+    }
+
+    @Override
+    public synchronized void onPause() {
+        LOGGER.d("onPause " + this);
+
+        if (isFinishing()) {
+            LOGGER.d("Requesting finish");
+            finish();
+        }
+
+        handlerThread.quitSafely();
+        try {
+            handlerThread.join();
+            handlerThread = null;
+            handler = null;
+        } catch (final InterruptedException e) {
+            LOGGER.e(e, "Exception!");
+        }
+
+        super.onPause();
+    }
+
+    @Override
+    public synchronized void onStop() {
+        LOGGER.d("onStop " + this);
+        super.onStop();
+    }
+
+    @Override
+    public synchronized void onDestroy() {
+        LOGGER.d("onDestroy " + this);
+        super.onDestroy();
+    }
+
     /****************** Methods to be implemented by DetectorActivity.java ********************/
-    //protected abstract void processImage();
-    //protected abstract void onPreviewSizeChosen(final Size size, final int rotation);
-    protected int getLayoutId(){
-        return R.layout.camera_connection_fragment_tracking;
+    protected abstract void processImage();
+    protected abstract void onPreviewSizeChosen(final Size size, final int rotation);
+    protected abstract int getLayoutId();
+    protected abstract Size getDesiredPreviewFrameSize();
+
+    public void closeCameraActivity(View view) {
+        finish();
     }
-    protected Size getDesiredPreviewFrameSize(){
-        return DESIRED_PREVIEW_SIZE;
-    }
+//    protected int getLayoutId(){
+//        return R.layout.camera_connection_fragment_tracking;
+//    }
+//    protected Size getDesiredPreviewFrameSize(){
+//        return DESIRED_PREVIEW_SIZE;
+//    }
 
 }

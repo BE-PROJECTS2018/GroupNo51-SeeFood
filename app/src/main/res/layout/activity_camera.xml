@@ -12,11 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        tools:context="com.example.ubuntu.seefood.CameraActivity">
+        tools:context="com.example.ubuntu.seefood.DetectorActivity">
 
 
     <Button
-        android:id="@+id/finish_camera_activity"
+        android:id="@+id/finish_detector_activity"
         android:text="@string/camera_close_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

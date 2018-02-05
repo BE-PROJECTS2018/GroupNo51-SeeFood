@@ -1,7 +1,5 @@
 package com.example.ubuntu.seefood;
 
-import android.view.View;
-
 /**
  * Created by ubuntu on 3/2/18.
  */
