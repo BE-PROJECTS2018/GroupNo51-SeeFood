@@ -1,5 +1,6 @@
 package com.example.ubuntu.seefood;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,12 +9,14 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -75,6 +78,9 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
     private static final float MINIMUM_CONFIDENCE_MULTIBOX = 0.1f;
     private static final float MINIMUM_CONFIDENCE_YOLO = 0.25f;
 
+    private HashSet<Classifier.Recognition> resultSet = new HashSet<>();
+    private final int RESULT_OK=2;
+
     /************************** Abstract methods of CameraActivity *************************/
 
     @Override
@@ -88,8 +94,7 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
         tracker = new MultiBoxTracker(this);
 
         int cropSize = YOLO_INPUT_SIZE;
-        detector =
-                TensorFlowYoloDetector.create(
+        detector = TensorFlowYoloDetector.create(
                         getAssets(),
                         YOLO_MODEL_FILE,
                         YOLO_INPUT_SIZE,
@@ -246,8 +251,13 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
                         for (final Classifier.Recognition result : results) {
                             final RectF location = result.getLocation();
                             if (location != null && result.getConfidence() >= minimumConfidence) {
-                                canvas.drawRect(location, paint);
 
+                                //ResultSet is a hashset which stores all the recognitions while the camera is rolled on objects
+                                //This resultSet is passed to the DisplayResults activity
+                                //ResultSet stores objects of class Classifier.Recognition - which has many fields like id, name etc
+                                resultSet.add(result);
+
+                                canvas.drawRect(location, paint);
                                 cropToFrameTransform.mapRect(location);
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
@@ -273,5 +283,25 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
         return DESIRED_PREVIEW_SIZE;
     }
 
-    /******************************************************************************************/
+    @Override
+    public void onSetDebug(final boolean debug) {
+        detector.enableStatLogging(debug);
+    }
+
+    /******************** Code to return detected objects to the CameraActivity.java ******************/
+
+    @Override
+    public void finish() {
+        Intent data = new Intent();
+        Bundle resultsBundle = new Bundle();
+
+        int counter=1;
+        for(Classifier.Recognition recognition:resultSet){
+            resultsBundle.putString("Object" + counter++,
+                    "Class:" + recognition.getTitle() + ", Confidence:" + recognition.getConfidence()*100);
+        }
+        data.putExtra("resultsBundle", resultsBundle);
+        setResult(RESULT_OK, data);
+        super.finish();
+    }
 }

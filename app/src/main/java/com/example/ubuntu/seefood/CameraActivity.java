@@ -217,7 +217,7 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
             rgbBytes = new int[previewWidth * previewHeight];
         }
         try {
-            final Image image = imageReader.acquireNextImage();
+            final Image image = imageReader.acquireLatestImage();
 
             if (image == null) {
                 return;
@@ -290,7 +290,7 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
             debug = !debug;
             requestRender();
-            //onSetDebug(debug);
+            onSetDebug(debug);
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -401,12 +401,15 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
         super.onDestroy();
     }
 
+    public void onSetDebug(final boolean debug) {}
+
     /****************** Methods to be implemented by DetectorActivity.java ********************/
     protected abstract void processImage();
     protected abstract void onPreviewSizeChosen(final Size size, final int rotation);
     protected abstract int getLayoutId();
     protected abstract Size getDesiredPreviewFrameSize();
 
+    /************************************* Button onClick ************************************/
     public void closeCameraActivity(View view) {
         finish();
     }

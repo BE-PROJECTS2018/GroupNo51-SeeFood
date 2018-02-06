@@ -7,6 +7,7 @@
     <string name="description_info">Info</string>
     <string name="request_permission">This sample needs camera permission.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="no_objects_found">No objects found. Start detection by clicking the camera icon!</string>
 
 
 </resources>
