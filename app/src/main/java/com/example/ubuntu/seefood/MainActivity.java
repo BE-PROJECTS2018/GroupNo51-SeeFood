@@ -18,12 +18,18 @@ import android.widget.Toast;
 import com.example.ubuntu.seefood.env.Logger;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
     private final int REQUEST_CODE=1;
     private final int RESULT_CODE=2;
+    private ArrayList<String> objects;
+    private ObjectAdapter mAdapter;
+    private ListView objectListView;
+    private TextView hello_msg;
+
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
@@ -64,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         //Toast.makeText(getApplicationContext(),"Request and result code match!",Toast.LENGTH_LONG).show();
         Bundle results = data.getBundleExtra("resultsBundle");
         int n = results.size();
-//        Log.d("MainActivity.java","displayDetectedObjects.n: "+n);
 
         // Below code is written to find count of each class and its mean confidence score
         HashMap<String, Integer>  classCount = new HashMap<>();
@@ -77,14 +82,6 @@ public class MainActivity extends AppCompatActivity {
             String[] confidenceScore = pair[1].split(":");
             String class_key = className[1];
             Double score_key = Double.parseDouble(confidenceScore[1]);
-
-//            Log.d("MainActivity.java","displayDetectedObjects.temp: "+temp);
-//            Log.d("MainActivity.java","displayDetectedObjects.pair: "+pair[0]+", "+ pair[1]);
-//            Log.d("MainActivity.java","displayDetectedObjects.className: "+className[0]+", "+className[1]);
-//            Log.d("MainActivity.java","displayDetectedObjects.confidenceScore: "+confidenceScore[0]+", "+confidenceScore[1]);
-//            Log.d("MainActivity.java","displayDetectedObjects.class_key: "+class_key);
-//            Log.d("MainActivity.java","displayDetectedObjects.score_key: "+score_key);
-
 
             // Updating count for each class in the list of detected objects
             if (classCount.containsKey(class_key)) {
@@ -101,23 +98,30 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        String[] arr = new String[classCount.size()];
-        int counter=0;
-        DecimalFormat df = new DecimalFormat("##.##");
+//        String[] arr = new String[classCount.size()];
+//        int counter=0;
+//        DecimalFormat df = new DecimalFormat("##.##");
+//        for(String class_key: classCount.keySet()) {
+//            int count = classCount.get(class_key);
+//            arr[counter++] = "Object:             " + class_key + "\n" + "Frames:           " + count +
+//                    "\n" + "Confidence:    " +
+//                    df.format(classConfidence.get(class_key)/count) +"%";
+//        }
+
+        objects = new ArrayList<>();
+        DecimalFormat df = new DecimalFormat("00.0");
         for(String class_key: classCount.keySet()) {
             int count = classCount.get(class_key);
-            arr[counter++] = "Object:             " + class_key + "\n" + "Frames:           " + count +
-                    "\n" + "Confidence:    " +
-                    df.format(classConfidence.get(class_key)/count) +"%";
+            objects.add(class_key + "," + count + "," + df.format(classConfidence.get(class_key)/count));
         }
 
-        // Code to populate ListView using above String[] arr
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arr);
-        ListView listView = (ListView) findViewById(R.id.list);
-        listView.setAdapter(adapter);
+        // Code to populate ListView using above objects ArrayList
+        mAdapter = new ObjectAdapter(this, objects);
+        objectListView = (ListView) findViewById(R.id.list);
+        objectListView.setAdapter(mAdapter);
 
-        TextView hello_msg = (TextView) findViewById(R.id.no_objects_found);
-        if(adapter.getCount()>0){
+        hello_msg = (TextView) findViewById(R.id.no_objects_found);
+        if(mAdapter.getCount()>0){
             hello_msg.setVisibility(View.GONE);
         }else{
             hello_msg.setVisibility(View.VISIBLE);
