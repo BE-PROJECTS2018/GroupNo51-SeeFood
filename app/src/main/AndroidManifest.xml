@@ -19,7 +19,6 @@
             android:configChanges="orientation|screenSize|keyboard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -30,6 +29,13 @@
             android:label="@string/activity_camera"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/detector_settings_title"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
     </application>
 
 </manifest>

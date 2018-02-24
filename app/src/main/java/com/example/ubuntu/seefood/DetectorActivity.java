@@ -1,6 +1,7 @@
 package com.example.ubuntu.seefood;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.graphics.Typeface;
 import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
@@ -45,7 +47,7 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
     // Graphs and models downloaded from http://pjreddie.com/darknet/yolo/ may be converted e.g. via
     // DarkFlow (https://github.com/thtrieu/darkflow). Sample command:
     // ./flow --model cfg/tiny-yolo-voc.cfg --load bin/tiny-yolo-voc.weights --savepb --verbalise
-    private static final String YOLO_MODEL_FILE = "file:///android_asset/tiny-yolo.pb";
+    private static String YOLO_MODEL_FILE;
     private static final int YOLO_INPUT_SIZE = 416;
     private static final String YOLO_INPUT_NAME = "input";
     private static final String YOLO_OUTPUT_NAMES = "output";
@@ -93,6 +95,12 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
 
         tracker = new MultiBoxTracker(this);
 
+        // Sets the name of the model file to be used for detection
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String yolo_model_filename = sharedPrefs.getString(getString(R.string.settings_detector_key),
+                getString(R.string.settings_detector_default));
+        YOLO_MODEL_FILE= "file:///android_asset/" + yolo_model_filename;
+
         int cropSize = YOLO_INPUT_SIZE;
         detector = TensorFlowYoloDetector.create(
                         getAssets(),
@@ -100,7 +108,8 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
                         YOLO_INPUT_SIZE,
                         YOLO_INPUT_NAME,
                         YOLO_OUTPUT_NAMES,
-                        YOLO_BLOCK_SIZE);
+                        YOLO_BLOCK_SIZE,
+                        this);
 
         previewWidth = size.getWidth();
         previewHeight = size.getHeight();

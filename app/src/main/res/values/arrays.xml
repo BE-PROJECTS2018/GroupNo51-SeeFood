@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="settings_detector_labels">
+        <item>@string/settings_detector_ms_coco_label</item>
+        <item>@string/settings_detector_seefood_label</item>
+    </string-array>
+
+    <string-array name="settings_detector_values">
+        <item>@string/settings_detector_ms_coco_value</item>
+        <item>@string/settings_detector_seefood_value</item>
+    </string-array>
+</resources>

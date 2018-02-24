@@ -23,8 +23,10 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Logger LOGGER = new Logger();
     private final int REQUEST_CODE=1;
-    private final int RESULT_CODE=2;
+    private final int RESULT_CODE_DETECTOR=2;
+    private final int RESULT_CODE_SETTINGS=3;
     private ArrayList<String> objects;
     private ObjectAdapter mAdapter;
     private ListView objectListView;
@@ -39,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -52,17 +52,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.no_objects_found);
+        // TextView tv = (TextView) findViewById(R.id.no_objects_found);
         // This line prints "Hello from SeeFood" from native-lib.cpp
         // tv.setText(stringFromJNI());
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode==RESULT_CODE && requestCode==REQUEST_CODE){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_CODE_DETECTOR && requestCode==REQUEST_CODE){
             displayDetectedObjectsSummary(data);
-        }else{
-            Toast.makeText(getApplicationContext(),"Request and result code don't match!",Toast.LENGTH_LONG).show();
+        }else if(resultCode==RESULT_CODE_SETTINGS && requestCode==REQUEST_CODE){
+            if(data.getStringExtra(SettingsActivity.DETECTOR_NAME).equals("tiny-yolo.pb")) {
+                Toast.makeText(getApplicationContext(), "Detector : MS COCO", Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(getApplicationContext(), "Detector : SeeFood", Toast.LENGTH_LONG).show();
+            }
+        } else{
+            //Toast.makeText(getApplicationContext(),"Request and result code don't match!",Toast.LENGTH_LONG).show();
+            LOGGER.d("Request and result code don't match!");
         }
     }
 
@@ -144,11 +152,15 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivityForResult(settingsIntent, 1);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     /**
      * A native method that is implemented by the 'native-lib' native library,

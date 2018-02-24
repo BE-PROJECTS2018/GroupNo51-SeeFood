@@ -1,9 +1,12 @@
 package com.example.ubuntu.seefood;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.os.Trace;
+import android.preference.PreferenceManager;
 
 import com.example.ubuntu.seefood.env.Logger;
 import com.example.ubuntu.seefood.env.SplitTimer;
@@ -26,7 +29,7 @@ public class TensorFlowYoloDetector implements Classifier {
     // Only return this many results with at least this confidence.
     private static final int MAX_RESULTS = 5;
 
-    private static final int NUM_CLASSES = 80;
+    private static int NUM_CLASSES;
 
     private static final int NUM_BOXES_PER_BLOCK = 5;
 
@@ -62,7 +65,7 @@ public class TensorFlowYoloDetector implements Classifier {
             "tvmonitor"
     };
 
-    private static final String[] LABELS = {
+    private static final String[] LABELS_COCO = {
             "person",
             "bicycle",
             "car",
@@ -145,6 +148,36 @@ public class TensorFlowYoloDetector implements Classifier {
             "toothbrush"
     };
 
+//    private static final String[] LABELS_SEEFOOD = {
+//            "banana",
+//            "cabbage",
+//            "cauliflower",
+//            "cucumber",
+//            "egg",
+//            "fish",
+//            "apple",
+//            "capsicum",
+//            "okra",
+//            "onion",
+//            "pomogranate",
+//            "turnip",
+//            "broccoli",
+//            "spinach",
+//            "corn",
+//            "jackfruit"
+//    };
+
+    private static final String[] LABELS_SEEFOOD = {
+            "banana",
+            "cabbage",
+            "cauliflower",
+            "cucumber",
+            "egg",
+            "fish"
+    };
+
+    private static String[] LABELS;
+
     // Config values.
     private String inputName;
     private int inputSize;
@@ -167,10 +200,24 @@ public class TensorFlowYoloDetector implements Classifier {
             final int inputSize,
             final String inputName,
             final String outputName,
-            final int blockSize) {
+            final int blockSize,
+            final Context context) {
         TensorFlowYoloDetector d = new TensorFlowYoloDetector();
         d.inputName = inputName;
         d.inputSize = inputSize;
+
+        // Setting NUM_CLASSES and LABELS for the model using SharedPreferences
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String yolo_model_filename = sharedPrefs.getString(context.getResources().getString(R.string.settings_detector_key),
+                context.getResources().getString(R.string.settings_detector_default));
+
+        if(yolo_model_filename.equals("tiny-yolo.pb")){
+            LABELS = LABELS_COCO;
+            NUM_CLASSES=80;
+        }else {
+            LABELS = LABELS_SEEFOOD;
+            NUM_CLASSES=6;
+        }
 
         // Pre-allocate buffers.
         d.outputNames = outputName.split(",");

@@ -9,5 +9,20 @@
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
     <string name="no_objects_found">No objects found. Start detection by clicking the camera icon!</string>
 
+    <!-- Settings Activity Title [CHAR LIMIT=NONE] -->
+    <string name="detector_settings_title">Detector Settings</string>
+
+    <!-- Strings For Detector Preference [CHAR LIMIT=30] -->
+    <string name="settings_detector_label">Detector</string>
+    <string name="settings_detector_key" translatable="false">detector_key</string>
+    <string name="settings_detector_default" translatable="false">@string/settings_detector_seefood_value</string>
+
+    <!-- Label for detector ms coco option [CHAR LIMIT=20] -->
+    <string name="settings_detector_ms_coco_label">MS COCO</string>
+    <string name="settings_detector_ms_coco_value" translatable="false">tiny-yolo.pb</string>
+
+    <!-- Label for detector seefood option [CHAR LIMIT=20] -->
+    <string name="settings_detector_seefood_label">SeeFood</string>
+    <string name="settings_detector_seefood_value" translatable="false">tiny-yolo-voc-3c.pb</string>
 
 </resources>
