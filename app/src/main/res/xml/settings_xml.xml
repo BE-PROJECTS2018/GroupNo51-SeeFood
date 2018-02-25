@@ -10,4 +10,12 @@
         android:key="@string/settings_detector_key"
         android:title="@string/settings_detector_label" />
 
+    <EditTextPreference
+        android:defaultValue="@string/settings_detector_threshold_default"
+        android:inputType="numberDecimal"
+        android:key="@string/settings_detector_threshold_key"
+        android:selectAllOnFocus="true"
+        android:title="@string/settings_detector_threshold_label" />
+
+
 </PreferenceScreen>

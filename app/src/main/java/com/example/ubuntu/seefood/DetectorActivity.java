@@ -78,7 +78,7 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
     // Minimum detection confidence to track a detection.
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.6f;
     private static final float MINIMUM_CONFIDENCE_MULTIBOX = 0.1f;
-    private static final float MINIMUM_CONFIDENCE_YOLO = 0.25f;
+    private static float MINIMUM_CONFIDENCE_YOLO;
 
     private HashSet<Classifier.Recognition> resultSet = new HashSet<>();
     private final int RESULT_OK=2;
@@ -95,12 +95,11 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
 
         tracker = new MultiBoxTracker(this);
 
-        // Sets the name of the model file to be used for detection
+        // Sets the name of the model file and threshold value to be used for detection
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         String yolo_model_filename = sharedPrefs.getString(getString(R.string.settings_detector_key),
                 getString(R.string.settings_detector_default));
         YOLO_MODEL_FILE= "file:///android_asset/" + yolo_model_filename;
-
         int cropSize = YOLO_INPUT_SIZE;
         detector = TensorFlowYoloDetector.create(
                         getAssets(),
@@ -110,6 +109,9 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
                         YOLO_OUTPUT_NAMES,
                         YOLO_BLOCK_SIZE,
                         this);
+        String min_confidence_yolo = sharedPrefs.getString(getString(R.string.settings_detector_threshold_key),
+                getString(R.string.settings_detector_threshold_default));
+        MINIMUM_CONFIDENCE_YOLO = Float.parseFloat(min_confidence_yolo);
 
         previewWidth = size.getWidth();
         previewHeight = size.getHeight();

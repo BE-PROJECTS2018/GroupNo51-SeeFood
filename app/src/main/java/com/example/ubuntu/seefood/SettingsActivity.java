@@ -48,6 +48,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             Preference detector = findPreference(getString(R.string.settings_detector_key));
             bindPreferenceSummaryToValue(detector);
+
+            Preference threshold = findPreference(getString(R.string.settings_detector_threshold_key));
+            bindPreferenceSummaryToValue(threshold);
         }
 
         @Override

@@ -148,32 +148,23 @@ public class TensorFlowYoloDetector implements Classifier {
             "toothbrush"
     };
 
-//    private static final String[] LABELS_SEEFOOD = {
-//            "banana",
-//            "cabbage",
-//            "cauliflower",
-//            "cucumber",
-//            "egg",
-//            "fish",
-//            "apple",
-//            "capsicum",
-//            "okra",
-//            "onion",
-//            "pomogranate",
-//            "turnip",
-//            "broccoli",
-//            "spinach",
-//            "corn",
-//            "jackfruit"
-//    };
-
-    private static final String[] LABELS_SEEFOOD = {
+    public static final String[] LABELS_SEEFOOD = {
             "banana",
             "cabbage",
             "cauliflower",
             "cucumber",
             "egg",
-            "fish"
+            "fish",
+            "apple",
+            "capsicum",
+            "okra",
+            "onion",
+            "pomogranate",
+            "turnip",
+            "broccoli",
+            "spinach",
+            "corn",
+            "jackfruit"
     };
 
     private static String[] LABELS;
@@ -210,13 +201,12 @@ public class TensorFlowYoloDetector implements Classifier {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         String yolo_model_filename = sharedPrefs.getString(context.getResources().getString(R.string.settings_detector_key),
                 context.getResources().getString(R.string.settings_detector_default));
-
-        if(yolo_model_filename.equals("tiny-yolo.pb")){
+        if(yolo_model_filename.equals(context.getResources().getString(R.string.settings_detector_ms_coco_value))){
             LABELS = LABELS_COCO;
             NUM_CLASSES=80;
         }else {
             LABELS = LABELS_SEEFOOD;
-            NUM_CLASSES=6;
+            NUM_CLASSES=16;
         }
 
         // Pre-allocate buffers.

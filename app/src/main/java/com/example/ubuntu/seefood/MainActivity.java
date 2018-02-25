@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         if(resultCode==RESULT_CODE_DETECTOR && requestCode==REQUEST_CODE){
             displayDetectedObjectsSummary(data);
         }else if(resultCode==RESULT_CODE_SETTINGS && requestCode==REQUEST_CODE){
-            if(data.getStringExtra(SettingsActivity.DETECTOR_NAME).equals("tiny-yolo.pb")) {
+            if(data.getStringExtra(SettingsActivity.DETECTOR_NAME).equals(getString(R.string.settings_detector_ms_coco_value))) {
                 Toast.makeText(getApplicationContext(), "Detector : MS COCO", Toast.LENGTH_LONG).show();
             }else{
                 Toast.makeText(getApplicationContext(), "Detector : SeeFood", Toast.LENGTH_LONG).show();
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
         objects = new ArrayList<>();
-        DecimalFormat df = new DecimalFormat("00.0");
+        DecimalFormat df = new DecimalFormat("##.#");
         for(String class_key: classCount.keySet()) {
             int count = classCount.get(class_key);
             objects.add(class_key + "," + count + "," + df.format(classConfidence.get(class_key)/count));
@@ -154,6 +154,10 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivityForResult(settingsIntent, 1);
+            return true;
+        } else if(id == R.id.action_about){
+            Intent aboutIntent = new Intent(this, AboutActivity.class);
+            startActivity(aboutIntent);
             return true;
         }
 

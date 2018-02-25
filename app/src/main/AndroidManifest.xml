@@ -36,6 +36,13 @@
             android:parentActivityName=".MainActivity">
         </activity>
 
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/activity_about"
+            android:configChanges="orientation|screenSize|keyboard"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
     </application>
 
 </manifest>

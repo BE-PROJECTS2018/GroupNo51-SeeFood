@@ -25,4 +25,11 @@
     <string name="settings_detector_seefood_label">SeeFood</string>
     <string name="settings_detector_seefood_value" translatable="false">tiny-yolo-voc-3c.pb</string>
 
+    <!-- Strings For Detector Preference [CHAR LIMIT=30] -->
+    <string name="settings_detector_threshold_label">Detector Threshold</string>
+    <string name="settings_detector_threshold_key" translatable="false">threshold_key</string>
+    <string name="settings_detector_threshold_default" translatable="false">0.25</string>
+    <string name="action_about">About</string>
+    <string name="activity_about">Supported Items</string>
+
 </resources>
