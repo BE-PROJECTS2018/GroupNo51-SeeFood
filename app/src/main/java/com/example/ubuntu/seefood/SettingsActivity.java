@@ -34,7 +34,14 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = getIntent();
-        intent.putExtra(DETECTOR_NAME, stringValue);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String yolo_model_filename = sharedPrefs.getString(getString(R.string.settings_detector_key),
+                getString(R.string.settings_detector_default));
+        if(yolo_model_filename.equals(getString(R.string.settings_detector_ms_coco_value))) {
+            intent.putExtra(DETECTOR_NAME, getString(R.string.settings_detector_ms_coco_label));
+        }else{
+            intent.putExtra(DETECTOR_NAME, getString(R.string.settings_detector_seefood_label));
+        }
         setResult(RESULT_CODE, intent);
         super.onBackPressed();
     }

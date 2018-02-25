@@ -13,8 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#ifndef COM_EXAMPLE_UBUNTU_JNI_IMAGEUTILS_RGB2YUV_H_
-#define COM_EXAMPLE_UBUNTU_JNI_IMAGEUTILS_RGB2YUV_H_
+#ifndef ORG_TENSORFLOW_JNI_IMAGEUTILS_RGB2YUV_H_
+#define ORG_TENSORFLOW_JNI_IMAGEUTILS_RGB2YUV_H_
 
 #include <stdint.h>
 

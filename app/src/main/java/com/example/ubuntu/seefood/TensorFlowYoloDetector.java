@@ -149,22 +149,19 @@ public class TensorFlowYoloDetector implements Classifier {
     };
 
     public static final String[] LABELS_SEEFOOD = {
-            "banana",
-            "cabbage",
-            "cauliflower",
-            "cucumber",
-            "egg",
-            "fish",
             "apple",
-            "capsicum",
-            "okra",
-            "onion",
-            "pomogranate",
-            "turnip",
+            "banana",
             "broccoli",
-            "spinach",
+            "cabbage",
+            "capsicum",
+            "cauliflower",
             "corn",
-            "jackfruit"
+            "cucumber",
+            "jackfruit",
+            "pineapple",
+            "pomogranate",
+            "spinach",
+            "strawberry"
     };
 
     private static String[] LABELS;
@@ -206,7 +203,7 @@ public class TensorFlowYoloDetector implements Classifier {
             NUM_CLASSES=80;
         }else {
             LABELS = LABELS_SEEFOOD;
-            NUM_CLASSES=16;
+            NUM_CLASSES=13;
         }
 
         // Pre-allocate buffers.

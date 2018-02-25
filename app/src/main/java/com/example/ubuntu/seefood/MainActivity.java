@@ -32,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
     private ListView objectListView;
     private TextView hello_msg;
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
+//    Used to load the 'native-lib' library on application startup.
+//    static {
+//        System.loadLibrary("native-lib");
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +63,8 @@ public class MainActivity extends AppCompatActivity {
         if(resultCode==RESULT_CODE_DETECTOR && requestCode==REQUEST_CODE){
             displayDetectedObjectsSummary(data);
         }else if(resultCode==RESULT_CODE_SETTINGS && requestCode==REQUEST_CODE){
-            if(data.getStringExtra(SettingsActivity.DETECTOR_NAME).equals(getString(R.string.settings_detector_ms_coco_value))) {
-                Toast.makeText(getApplicationContext(), "Detector : MS COCO", Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(getApplicationContext(), "Detector : SeeFood", Toast.LENGTH_LONG).show();
-            }
+            Toast.makeText(getApplicationContext(), "Detector : "
+                    + data.getStringExtra(SettingsActivity.DETECTOR_NAME), Toast.LENGTH_LONG).show();
         } else{
             //Toast.makeText(getApplicationContext(),"Request and result code don't match!",Toast.LENGTH_LONG).show();
             LOGGER.d("Request and result code don't match!");

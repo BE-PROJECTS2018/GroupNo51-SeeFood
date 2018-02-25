@@ -16,8 +16,8 @@ limitations under the License.
 // This is a collection of routines which converts various YUV image formats
 // to (A)RGB.
 
-#ifndef COM_EXAMPLE_UBUNTU_JNI_IMAGEUTILS_YUV2RGB_H_
-#define COM_EXAMPLE_UBUNTU_JNI_IMAGEUTILS_YUV2RGB_H_
+#ifndef ORG_TENSORFLOW_JNI_IMAGEUTILS_YUV2RGB_H_
+#define ORG_TENSORFLOW_JNI_IMAGEUTILS_YUV2RGB_H_
 
 #include <stdint.h>
 
