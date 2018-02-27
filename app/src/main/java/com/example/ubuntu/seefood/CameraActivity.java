@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -36,7 +37,7 @@ import java.nio.ByteBuffer;
  */
 
 /** Main {@code Activity} class for the Camera app. */
-public abstract class CameraActivity extends Activity implements ImageReader.OnImageAvailableListener {
+public abstract class CameraActivity extends Activity implements ImageReader.OnImageAvailableListener, Camera.PreviewCallback {
 
     /************************** Class members *****************************/
     private static final Logger LOGGER = new Logger();
@@ -149,9 +150,8 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
             fragment = camera2Fragment;
         }
         else {
-//            fragment =
-//                    new LegacyCameraConnectionFragment(this, getLayoutId(), getDesiredPreviewFrameSize());
-            fragment=null;
+            fragment =
+                    new LegacyCameraConnectionFragment(this, getLayoutId(), getDesiredPreviewFrameSize());
             Log.d("CameraActivity.java","setFragment(): fragment not initialised!");
         }
 
@@ -207,6 +207,59 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
         return requiredLevel <= deviceLevel;
     }
 
+    private byte[] lastPreviewFrame;
+
+    /**
+     * Callback for android.hardware.Camera API
+     */
+    @Override
+    public void onPreviewFrame(final byte[] bytes, final Camera camera) {
+        if (isProcessingFrame) {
+            LOGGER.w("Dropping frame!");
+            return;
+        }
+
+        try {
+            // Initialize the storage bitmaps once when the resolution is known.
+            if (rgbBytes == null) {
+                Camera.Size previewSize = camera.getParameters().getPreviewSize();
+                previewHeight = previewSize.height;
+                previewWidth = previewSize.width;
+                rgbBytes = new int[previewWidth * previewHeight];
+                onPreviewSizeChosen(new Size(previewSize.width, previewSize.height), 90);
+            }
+        } catch (final Exception e) {
+            LOGGER.e(e, "Exception!");
+            return;
+        }
+
+        isProcessingFrame = true;
+        lastPreviewFrame = bytes;
+        yuvBytes[0] = bytes;
+        yRowStride = previewWidth;
+
+        imageConverter =
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageUtils.convertYUV420SPToARGB8888(bytes, previewWidth, previewHeight, rgbBytes);
+                    }
+                };
+
+        postInferenceCallback =
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        camera.addCallbackBuffer(bytes);
+                        isProcessingFrame = false;
+                    }
+                };
+        processImage();
+    }
+
+    /**
+     * Callback for Camera2 API
+     */
     @Override
     public void onImageAvailable(ImageReader imageReader) {
         //We need wait until we have some size from onPreviewSizeChosen
