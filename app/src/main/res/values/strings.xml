@@ -7,7 +7,7 @@
     <string name="description_info">Info</string>
     <string name="request_permission">This sample needs camera permission.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
-    <string name="no_objects_found">No objects found. Start detection by clicking the camera icon!</string>
+    <string name="no_objects_found">No items found. Start detection by clicking the camera icon!</string>
 
     <!-- Settings Activity Title [CHAR LIMIT=NONE] -->
     <string name="detector_settings_title">Detector Settings</string>
@@ -31,5 +31,15 @@
     <string name="settings_detector_threshold_default" translatable="false">0.25</string>
     <string name="action_about">About</string>
     <string name="activity_about">Supported Items</string>
+
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">1616850468429606</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb1616850468429606</string>
+    <!-- Twitter consumer key and secret -->
+    <string name="twitter_consumer_key" translatable="false">YOUR_CONSUMER_KEY</string>
+    <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_out">Sign out</string>
+
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.ubuntu.seefood;
+package com.example.ubuntu.seefood.detector;
 
 /**
  * Created by ubuntu on 3/2/18.
@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,13 +22,6 @@ public class OverlayView extends View {
         super(context, attrs);
     }
 
-    /**
-     * Interface defining the callback for client classes.
-     */
-    public interface DrawCallback {
-        public void drawCallback(final Canvas canvas);
-    }
-
     public void addCallback(final DrawCallback callback) {
         callbacks.add(callback);
     }
@@ -38,5 +32,12 @@ public class OverlayView extends View {
         for (final DrawCallback callback : callbacks) {
             callback.drawCallback(canvas);
         }
+    }
+
+    /**
+     * Interface defining the callback for client classes.
+     */
+    public interface DrawCallback {
+        void drawCallback(final Canvas canvas);
     }
 }

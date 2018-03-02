@@ -1,4 +1,4 @@
-package com.example.ubuntu.seefood;
+package com.example.ubuntu.seefood.detector;
 
 /**
  * Created by ubuntu on 5/2/18.
@@ -13,10 +13,18 @@ import java.util.List;
  * Generic interface for interacting with different recognition engines.
  */
 public interface Classifier {
+    List<Recognition> recognizeImage(Bitmap bitmap);
+
+    void enableStatLogging(final boolean debug);
+
+    String getStatString();
+
+    void close();
+
     /**
      * An immutable result returned by a Classifier describing what was recognized.
      */
-    public class Recognition {
+    class Recognition {
         /**
          * A unique identifier for what has been recognized. Specific to the class, not the instance of
          * the object.
@@ -86,12 +94,4 @@ public interface Classifier {
             return resultString.trim();
         }
     }
-
-    List<Recognition> recognizeImage(Bitmap bitmap);
-
-    void enableStatLogging(final boolean debug);
-
-    String getStatString();
-
-    void close();
 }

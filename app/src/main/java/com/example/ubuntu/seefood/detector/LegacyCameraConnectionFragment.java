@@ -1,4 +1,4 @@
-package com.example.ubuntu.seefood;
+package com.example.ubuntu.seefood.detector;
 
 import android.app.Fragment;
 import android.graphics.SurfaceTexture;
@@ -14,33 +14,19 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ubuntu.seefood.R;
+import com.example.ubuntu.seefood.env.ImageUtils;
+import com.example.ubuntu.seefood.env.Logger;
+
 import java.io.IOException;
 import java.util.List;
-import com.example.ubuntu.seefood.env.Logger;
-import com.example.ubuntu.seefood.env.ImageUtils;
 
 /**
  * Created by ubuntu on 27/2/18.
  */
 
 public class LegacyCameraConnectionFragment extends Fragment {
-    private Camera camera;
     private static final Logger LOGGER = new Logger();
-    private Camera.PreviewCallback imageListener;
-    private Size desiredSize;
-
-    /**
-     * The layout identifier to inflate for this Fragment.
-     */
-    private int layout;
-
-    public LegacyCameraConnectionFragment(
-            final Camera.PreviewCallback imageListener, final int layout, final Size desiredSize) {
-        this.imageListener = imageListener;
-        this.layout = layout;
-        this.desiredSize = desiredSize;
-    }
-
     /**
      * Conversion from screen rotation to JPEG orientation.
      */
@@ -53,6 +39,17 @@ public class LegacyCameraConnectionFragment extends Fragment {
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
 
+    private Camera camera;
+    private Camera.PreviewCallback imageListener;
+    private Size desiredSize;
+    /**
+     * The layout identifier to inflate for this Fragment.
+     */
+    private int layout;
+    /**
+     * An {@link AutoFitTextureView} for camera preview.
+     */
+    private AutoFitTextureView textureView;
     /**
      * {@link android.view.TextureView.SurfaceTextureListener} handles several lifecycle events on a
      * {@link TextureView}.
@@ -108,16 +105,17 @@ public class LegacyCameraConnectionFragment extends Fragment {
                 @Override
                 public void onSurfaceTextureUpdated(final SurfaceTexture texture) {}
             };
-
-    /**
-     * An {@link AutoFitTextureView} for camera preview.
-     */
-    private AutoFitTextureView textureView;
-
     /**
      * An additional thread for running tasks that shouldn't block the UI.
      */
     private HandlerThread backgroundThread;
+
+    public LegacyCameraConnectionFragment(
+            final Camera.PreviewCallback imageListener, final int layout, final Size desiredSize) {
+        this.imageListener = imageListener;
+        this.layout = layout;
+        this.desiredSize = desiredSize;
+    }
 
     @Override
     public View onCreateView(
@@ -127,7 +125,7 @@ public class LegacyCameraConnectionFragment extends Fragment {
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
-        textureView = (AutoFitTextureView) view.findViewById(R.id.texture);
+        textureView = view.findViewById(R.id.texture);
     }
 
     @Override

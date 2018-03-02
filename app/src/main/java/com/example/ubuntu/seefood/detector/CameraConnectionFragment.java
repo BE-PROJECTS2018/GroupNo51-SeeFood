@@ -1,4 +1,4 @@
-package com.example.ubuntu.seefood;
+package com.example.ubuntu.seefood.detector;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.ubuntu.seefood.R;
 import com.example.ubuntu.seefood.env.Logger;
 
 import java.util.ArrayList;
@@ -54,78 +55,87 @@ public class CameraConnectionFragment extends Fragment {
 
     /*************************** Class member declarations **************************/
     private static final Logger LOGGER = new Logger();
+    /**
+     * The camera preview size will be chosen to be the smallest frame by pixel size capable of
+     * containing a DESIRED_SIZE x DESIRED_SIZE square.
+     */
+    private static final int MINIMUM_PREVIEW_SIZE = 320;
+    private static final String FRAGMENT_DIALOG = "dialog";
     private final ConnectionCallback cameraConnectionCallback;
-
     /**
      * A {@link ImageReader.OnImageAvailableListener} to receive frames as they are available.
      */
     private final ImageReader.OnImageAvailableListener imageListener;
-
     /**
      * The layout identifier to inflate for this Fragment.
      */
     private final int layout;
-
     /** The input size in pixels desired by TensorFlow (width and height of a square bitmap). */
     private final Size inputSize;
-
-    /**
-     * ID of the current {@link CameraDevice}.
-     */
-    private String cameraId;
-
-    /**
-     * An {@link AutoFitTextureView} for camera preview.
-     */
-    private AutoFitTextureView textureView;
-
-    /**
-     * An additional thread for running tasks that shouldn't block the UI.
-     */
-    private HandlerThread backgroundThread;
-
-    /**
-     * A {@link Handler} for running tasks in the background.
-     */
-    private Handler backgroundHandler;
-
-    /**
-     * {@link android.view.TextureView.SurfaceTextureListener} handles several lifecycle events on a
-     * {@link TextureView}.
-     */
-    private final TextureView.SurfaceTextureListener surfaceTextureListener =
-            new TextureView.SurfaceTextureListener() {
-                @Override
-                public void onSurfaceTextureAvailable(
-                        final SurfaceTexture texture, final int width, final int height) {
-                    openCamera(width, height);
-                }
-
-                @Override
-                public void onSurfaceTextureSizeChanged(
-                        final SurfaceTexture texture, final int width, final int height) {
-                    configureTransform(width, height);
-                }
-
-                @Override
-                public boolean onSurfaceTextureDestroyed(final SurfaceTexture texture) {
-                    return true;
-                }
-
-                @Override
-                public void onSurfaceTextureUpdated(final SurfaceTexture texture) {}
-            };
-
     /**
      * A {@link Semaphore} to prevent the app from exiting before closing the camera.
      */
     private final Semaphore cameraOpenCloseLock = new Semaphore(1);
+    private final CameraCaptureSession.CaptureCallback captureCallback =
+            new CameraCaptureSession.CaptureCallback() {
+                @Override
+                public void onCaptureProgressed(
+                        final CameraCaptureSession session,
+                        final CaptureRequest request,
+                        final CaptureResult partialResult) {
+                }
 
+                @Override
+                public void onCaptureCompleted(
+                        final CameraCaptureSession session,
+                        final CaptureRequest request,
+                        final TotalCaptureResult result) {
+                }
+            };
+    /**
+     * ID of the current {@link CameraDevice}.
+     */
+    private String cameraId;
+    /**
+     * An {@link AutoFitTextureView} for camera preview.
+     */
+    private AutoFitTextureView textureView;
+    /**
+     * An additional thread for running tasks that shouldn't block the UI.
+     */
+    private HandlerThread backgroundThread;
+    /**
+     * A {@link Handler} for running tasks in the background.
+     */
+    private Handler backgroundHandler;
     /**
      * A reference to the opened {@link CameraDevice}.
      */
     private CameraDevice cameraDevice;
-
+    /**
+     * A {@link CameraCaptureSession } for camera preview.
+     */
+    private CameraCaptureSession captureSession;
+    /**
+     * An {@link ImageReader} that handles preview frame capture.
+     */
+    private ImageReader previewReader;
+    /**
+     * The rotation in degrees of the camera sensor from the display.
+     */
+    private Integer sensorOrientation;
+    /**
+     * The {@link android.util.Size} of camera preview.
+     */
+    private Size previewSize;
+    /**
+     * {@link android.hardware.camera2.CaptureRequest.Builder} for the camera preview
+     */
+    private CaptureRequest.Builder previewRequestBuilder;
+    /**
+     * {@link CaptureRequest} generated by {@link #previewRequestBuilder}
+     */
+    private CaptureRequest previewRequest;
     /**
      * {@link android.hardware.camera2.CameraDevice.StateCallback}
      * is called when {@link CameraDevice} changes its state.
@@ -158,58 +168,32 @@ public class CameraConnectionFragment extends Fragment {
                     }
                 }
             };
-
     /**
-     * A {@link CameraCaptureSession } for camera preview.
+     * {@link android.view.TextureView.SurfaceTextureListener} handles several lifecycle events on a
+     * {@link TextureView}.
      */
-    private CameraCaptureSession captureSession;
-
-    /**
-     * An {@link ImageReader} that handles preview frame capture.
-     */
-    private ImageReader previewReader;
-
-    /**
-     * The rotation in degrees of the camera sensor from the display.
-     */
-    private Integer sensorOrientation;
-
-    /**
-     * The {@link android.util.Size} of camera preview.
-     */
-    private Size previewSize;
-
-    /**
-     * The camera preview size will be chosen to be the smallest frame by pixel size capable of
-     * containing a DESIRED_SIZE x DESIRED_SIZE square.
-     */
-    private static final int MINIMUM_PREVIEW_SIZE = 320;
-
-    private static final String FRAGMENT_DIALOG = "dialog";
-
-    /**
-     * {@link android.hardware.camera2.CaptureRequest.Builder} for the camera preview
-     */
-    private CaptureRequest.Builder previewRequestBuilder;
-
-    /**
-     * {@link CaptureRequest} generated by {@link #previewRequestBuilder}
-     */
-    private CaptureRequest previewRequest;
-
-    private final CameraCaptureSession.CaptureCallback captureCallback =
-            new CameraCaptureSession.CaptureCallback() {
+    private final TextureView.SurfaceTextureListener surfaceTextureListener =
+            new TextureView.SurfaceTextureListener() {
                 @Override
-                public void onCaptureProgressed(
-                        final CameraCaptureSession session,
-                        final CaptureRequest request,
-                        final CaptureResult partialResult) {}
+                public void onSurfaceTextureAvailable(
+                        final SurfaceTexture texture, final int width, final int height) {
+                    openCamera(width, height);
+                }
 
                 @Override
-                public void onCaptureCompleted(
-                        final CameraCaptureSession session,
-                        final CaptureRequest request,
-                        final TotalCaptureResult result) {}
+                public void onSurfaceTextureSizeChanged(
+                        final SurfaceTexture texture, final int width, final int height) {
+                    configureTransform(width, height);
+                }
+
+                @Override
+                public boolean onSurfaceTextureDestroyed(final SurfaceTexture texture) {
+                    return true;
+                }
+
+                @Override
+                public void onSurfaceTextureUpdated(final SurfaceTexture texture) {
+                }
             };
 
     /******************************* Methods start from here ********************************/
@@ -232,6 +216,56 @@ public class CameraConnectionFragment extends Fragment {
         return new CameraConnectionFragment(callback, imageListener, layout, inputSize);
     }
 
+    /**
+     * Given {@code choices} of {@code Size}s supported by a camera, chooses the smallest one whose
+     * width and height are at least as large as the minimum of both, or an exact match if possible.
+     *
+     * @param choices The list of sizes that the camera supports for the intended output class
+     * @param width   The minimum desired width
+     * @param height  The minimum desired height
+     * @return The optimal {@code Size}, or an arbitrary one if none were big enough
+     */
+    protected static Size chooseOptimalSize(final Size[] choices, final int width, final int height) {
+        final int minSize = Math.max(Math.min(width, height), MINIMUM_PREVIEW_SIZE);
+        final Size desiredSize = new Size(width, height);
+
+        // Collect the supported resolutions that are at least as big as the preview Surface
+        boolean exactSizeFound = false;
+        final List<Size> bigEnough = new ArrayList<Size>();
+        final List<Size> tooSmall = new ArrayList<Size>();
+        for (final Size option : choices) {
+            if (option.equals(desiredSize)) {
+                // Set the size but don't return yet so that remaining sizes will still be logged.
+                exactSizeFound = true;
+            }
+
+            if (option.getHeight() >= minSize && option.getWidth() >= minSize) {
+                bigEnough.add(option);
+            } else {
+                tooSmall.add(option);
+            }
+        }
+
+        LOGGER.i("Desired size: " + desiredSize + ", min size: " + minSize + "x" + minSize);
+        LOGGER.i("Valid preview sizes: [" + TextUtils.join(", ", bigEnough) + "]");
+        LOGGER.i("Rejected preview sizes: [" + TextUtils.join(", ", tooSmall) + "]");
+
+        if (exactSizeFound) {
+            LOGGER.i("Exact size match found.");
+            return desiredSize;
+        }
+
+        // Pick the smallest of those, assuming we found any
+        if (bigEnough.size() > 0) {
+            final Size chosenSize = Collections.min(bigEnough, new CompareSizesByArea());
+            LOGGER.i("Chosen size: " + chosenSize.getWidth() + "x" + chosenSize.getHeight());
+            return chosenSize;
+        } else {
+            LOGGER.e("Couldn't find any suitable preview size");
+            return choices[0];
+        }
+    }
+
     @Override
     public View onCreateView(
             final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
@@ -240,7 +274,7 @@ public class CameraConnectionFragment extends Fragment {
 
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
-        textureView = (AutoFitTextureView) view.findViewById(R.id.texture);
+        textureView = view.findViewById(R.id.texture);
     }
 
     @Override
@@ -338,7 +372,6 @@ public class CameraConnectionFragment extends Fragment {
             cameraOpenCloseLock.release();
         }
     }
-
 
     /**
      * Sets up member variables related to camera.
@@ -497,6 +530,36 @@ public class CameraConnectionFragment extends Fragment {
     }
 
     /**
+     * Shows a {@link Toast} on the UI thread.
+     *
+     * @param text The message to show
+     */
+    private void showToast(final String text) {
+        final Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+    }
+
+    public void setCamera(String cameraId) {
+        this.cameraId = cameraId;
+    }
+
+    /**
+     * Callback for Activities to use to initialize their data once the
+     * selected preview size is known.
+     */
+    public interface ConnectionCallback {
+        void onPreviewSizeChosen(Size size, int cameraRotation);
+    }
+
+    /**
      * Compares two {@code Size}s based on their areas.
      */
     static class CompareSizesByArea implements Comparator<Size> {
@@ -505,56 +568,6 @@ public class CameraConnectionFragment extends Fragment {
             // We cast here to ensure the multiplications won't overflow
             return Long.signum(
                     (long) lhs.getWidth() * lhs.getHeight() - (long) rhs.getWidth() * rhs.getHeight());
-        }
-    }
-
-    /**
-     * Given {@code choices} of {@code Size}s supported by a camera, chooses the smallest one whose
-     * width and height are at least as large as the minimum of both, or an exact match if possible.
-     *
-     * @param choices The list of sizes that the camera supports for the intended output class
-     * @param width The minimum desired width
-     * @param height The minimum desired height
-     * @return The optimal {@code Size}, or an arbitrary one if none were big enough
-     */
-    protected static Size chooseOptimalSize(final Size[] choices, final int width, final int height) {
-        final int minSize = Math.max(Math.min(width, height), MINIMUM_PREVIEW_SIZE);
-        final Size desiredSize = new Size(width, height);
-
-        // Collect the supported resolutions that are at least as big as the preview Surface
-        boolean exactSizeFound = false;
-        final List<Size> bigEnough = new ArrayList<Size>();
-        final List<Size> tooSmall = new ArrayList<Size>();
-        for (final Size option : choices) {
-            if (option.equals(desiredSize)) {
-                // Set the size but don't return yet so that remaining sizes will still be logged.
-                exactSizeFound = true;
-            }
-
-            if (option.getHeight() >= minSize && option.getWidth() >= minSize) {
-                bigEnough.add(option);
-            } else {
-                tooSmall.add(option);
-            }
-        }
-
-        LOGGER.i("Desired size: " + desiredSize + ", min size: " + minSize + "x" + minSize);
-        LOGGER.i("Valid preview sizes: [" + TextUtils.join(", ", bigEnough) + "]");
-        LOGGER.i("Rejected preview sizes: [" + TextUtils.join(", ", tooSmall) + "]");
-
-        if (exactSizeFound) {
-            LOGGER.i("Exact size match found.");
-            return desiredSize;
-        }
-
-        // Pick the smallest of those, assuming we found any
-        if (bigEnough.size() > 0) {
-            final Size chosenSize = Collections.min(bigEnough, new CompareSizesByArea());
-            LOGGER.i("Chosen size: " + chosenSize.getWidth() + "x" + chosenSize.getHeight());
-            return chosenSize;
-        } else {
-            LOGGER.e("Couldn't find any suitable preview size");
-            return choices[0];
         }
     }
 
@@ -587,36 +600,5 @@ public class CameraConnectionFragment extends Fragment {
                             })
                     .create();
         }
-    }
-
-    /**
-     * Shows a {@link Toast} on the UI thread.
-     *
-     * @param text The message to show
-     */
-    private void showToast(final String text) {
-        final Activity activity = getActivity();
-        if (activity != null) {
-            activity.runOnUiThread(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
-    }
-
-    /**
-     * Callback for Activities to use to initialize their data once the
-     * selected preview size is known.
-     */
-    public interface ConnectionCallback {
-        void onPreviewSizeChosen(Size size, int cameraRotation);
-    }
-
-
-    public void setCamera(String cameraId) {
-        this.cameraId = cameraId;
     }
 }

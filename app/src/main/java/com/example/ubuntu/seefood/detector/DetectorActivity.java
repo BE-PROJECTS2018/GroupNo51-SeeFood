@@ -1,4 +1,4 @@
-package com.example.ubuntu.seefood;
+package com.example.ubuntu.seefood.detector;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,19 +15,18 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Size;
 import android.util.TypedValue;
-import android.widget.Toast;
 
-import java.io.IOException;
+import com.example.ubuntu.seefood.CameraActivity;
+import com.example.ubuntu.seefood.R;
+import com.example.ubuntu.seefood.env.BorderedText;
+import com.example.ubuntu.seefood.env.ImageUtils;
+import com.example.ubuntu.seefood.env.Logger;
+import com.example.ubuntu.seefood.tracking.MultiBoxTracker;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
-
-import com.example.ubuntu.seefood.OverlayView.DrawCallback;
-import com.example.ubuntu.seefood.env.ImageUtils;
-import com.example.ubuntu.seefood.env.BorderedText;
-import com.example.ubuntu.seefood.env.Logger;
-import com.example.ubuntu.seefood.tracking.MultiBoxTracker;
 
 /**
  * Created by ubuntu on 5/2/18.
@@ -38,28 +37,29 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
     /******************************* Class members ************************************/
     private static final Logger LOGGER = new Logger();
     private static final float TEXT_SIZE_DIP = 10;
-    private BorderedText borderedText;
-    private MultiBoxTracker tracker;
-    private Classifier detector;
-
+    private static final int YOLO_INPUT_SIZE = 416;
+    private static final String YOLO_INPUT_NAME = "input";
+    private static final String YOLO_OUTPUT_NAMES = "output";
+    private static final int YOLO_BLOCK_SIZE = 32;
+    private static final DetectorMode MODE = DetectorMode.YOLO;
+    private static final boolean MAINTAIN_ASPECT = MODE == DetectorMode.YOLO;
+    private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
+    private static final boolean SAVE_PREVIEW_BITMAP = false;
+    // Minimum detection confidence to track a detection.
+    private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.6f;
+    private static final float MINIMUM_CONFIDENCE_MULTIBOX = 0.1f;
     // Configuration values for tiny-yolo-voc. Note that the graph is not included with TensorFlow and
     // must be manually placed in the assets/ directory by the user.
     // Graphs and models downloaded from http://pjreddie.com/darknet/yolo/ may be converted e.g. via
     // DarkFlow (https://github.com/thtrieu/darkflow). Sample command:
     // ./flow --model cfg/tiny-yolo-voc.cfg --load bin/tiny-yolo-voc.weights --savepb --verbalise
     private static String YOLO_MODEL_FILE;
-    private static final int YOLO_INPUT_SIZE = 416;
-    private static final String YOLO_INPUT_NAME = "input";
-    private static final String YOLO_OUTPUT_NAMES = "output";
-    private static final int YOLO_BLOCK_SIZE = 32;
-    // Which detection model to use: by default uses Tensorflow Object Detection API frozen
-    // checkpoints.  Optionally use legacy Multibox (trained using an older version of the API)
-    // or YOLO.
-    private enum DetectorMode {
-        TF_OD_API, MULTIBOX, YOLO;
-    }
-    private static final DetectorMode MODE = DetectorMode.YOLO;
-
+    private static float MINIMUM_CONFIDENCE_YOLO;
+    private final int RESULT_OK = 2;
+    OverlayView trackingOverlay;
+    private BorderedText borderedText;
+    private MultiBoxTracker tracker;
+    private Classifier detector;
     private Integer sensorOrientation;
     private long lastProcessingTimeMs;
     private Bitmap rgbFrameBitmap = null;
@@ -69,19 +69,8 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
     private long timestamp = 0;
     private Matrix frameToCropTransform;
     private Matrix cropToFrameTransform;
-    private static final boolean MAINTAIN_ASPECT = MODE == DetectorMode.YOLO;
-    OverlayView trackingOverlay;
-    private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
     private byte[] luminanceCopy;
-    private static final boolean SAVE_PREVIEW_BITMAP = false;
-
-    // Minimum detection confidence to track a detection.
-    private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.6f;
-    private static final float MINIMUM_CONFIDENCE_MULTIBOX = 0.1f;
-    private static float MINIMUM_CONFIDENCE_YOLO;
-
     private HashSet<Classifier.Recognition> resultSet = new HashSet<>();
-    private final int RESULT_OK=2;
 
     /************************** Abstract methods of CameraActivity *************************/
 
@@ -132,7 +121,7 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
         cropToFrameTransform = new Matrix();
         frameToCropTransform.invert(cropToFrameTransform);
 
-        trackingOverlay = (OverlayView) findViewById(R.id.tracking_overlay);
+        trackingOverlay = findViewById(R.id.tracking_overlay);
         trackingOverlay.addCallback(
                 new OverlayView.DrawCallback() {
                     @Override
@@ -146,7 +135,7 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
 
         // This displays the overlay text on pressing volume button
         addCallback(
-                new DrawCallback() {
+                new OverlayView.DrawCallback() {
                     @Override
                     public void drawCallback(final Canvas canvas) {
                         if (!isDebug()) {
@@ -188,7 +177,6 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
                     }
                 });
     }
-
 
     @Override
     protected void processImage() {
@@ -314,5 +302,12 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
         data.putExtra("resultsBundle", resultsBundle);
         setResult(RESULT_OK, data);
         super.finish();
+    }
+
+    // Which detection model to use: by default uses Tensorflow Object Detection API frozen
+    // checkpoints.  Optionally use legacy Multibox (trained using an older version of the API)
+    // or YOLO.
+    private enum DetectorMode {
+        TF_OD_API, MULTIBOX, YOLO
     }
 }

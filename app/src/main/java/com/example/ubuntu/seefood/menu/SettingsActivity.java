@@ -1,4 +1,4 @@
-package com.example.ubuntu.seefood;
+package com.example.ubuntu.seefood.menu;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,8 +9,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 
+import com.example.ubuntu.seefood.R;
 import com.example.ubuntu.seefood.env.Logger;
 
 /**
@@ -19,10 +19,10 @@ import com.example.ubuntu.seefood.env.Logger;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private static int RESULT_CODE = 0;
-    private static final Logger LOGGER = new Logger();
-    private static String stringValue;
     public static final String DETECTOR_NAME = "detector_name";
+    private static final Logger LOGGER = new Logger();
+    private static int RESULT_CODE = 0;
+    private static String stringValue;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

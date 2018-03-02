@@ -1,4 +1,4 @@
-package com.example.ubuntu.seefood;
+package com.example.ubuntu.seefood.detector;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.os.Trace;
 import android.preference.PreferenceManager;
 
+import com.example.ubuntu.seefood.R;
 import com.example.ubuntu.seefood.env.Logger;
 import com.example.ubuntu.seefood.env.SplitTimer;
 
@@ -24,13 +25,27 @@ import java.util.PriorityQueue;
 
 /** An object detector that uses TF and a YOLO model to detect objects. */
 public class TensorFlowYoloDetector implements Classifier {
+    public static final String[] LABELS_SEEFOOD = {
+            "banana",
+            "cabbage",
+            "cauliflower",
+            "cucumber",
+            "egg",
+            "fish",
+            "apple",
+            "capsicum",
+            "okra",
+            "onion",
+            "pomogranate",
+            "turnip",
+            "broccoli",
+            "spinach",
+            "corn",
+            "jackfruit"
+    };
     private static final Logger LOGGER = new Logger();
-
     // Only return this many results with at least this confidence.
     private static final int MAX_RESULTS = 5;
-
-    private static int NUM_CLASSES;
-
     private static final int NUM_BOXES_PER_BLOCK = 5;
 
     // TODO(andrewharp): allow loading anchors and classes from files.
@@ -163,26 +178,7 @@ public class TensorFlowYoloDetector implements Classifier {
 //            "spinach",
 //            "strawberry"
 //    };
-
-    public static final String[] LABELS_SEEFOOD = {
-            "banana",
-            "cabbage",
-            "cauliflower",
-            "cucumber",
-            "egg",
-            "fish",
-            "apple",
-            "capsicum",
-            "okra",
-            "onion",
-            "pomogranate",
-            "turnip",
-            "broccoli",
-            "spinach",
-            "corn",
-            "jackfruit"
-    };
-
+private static int NUM_CLASSES;
     private static String[] LABELS;
 
     // Config values.
@@ -199,6 +195,9 @@ public class TensorFlowYoloDetector implements Classifier {
     private boolean logStats = false;
 
     private TensorFlowInferenceInterface inferenceInterface;
+
+    private TensorFlowYoloDetector() {
+    }
 
     /** Initializes a native TensorFlow session for classifying images. */
     public static Classifier create(
@@ -235,8 +234,6 @@ public class TensorFlowYoloDetector implements Classifier {
 
         return d;
     }
-
-    private TensorFlowYoloDetector() {}
 
     private float expit(final float x) {
         return (float) (1. / (1. + Math.exp(-x)));

@@ -26,8 +26,11 @@ import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.example.ubuntu.seefood.env.Logger;
+import com.example.ubuntu.seefood.detector.CameraConnectionFragment;
+import com.example.ubuntu.seefood.detector.LegacyCameraConnectionFragment;
+import com.example.ubuntu.seefood.detector.OverlayView;
 import com.example.ubuntu.seefood.env.ImageUtils;
+import com.example.ubuntu.seefood.env.Logger;
 
 import java.nio.ByteBuffer;
 
@@ -43,11 +46,11 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
     private static final Logger LOGGER = new Logger();
     private static final int PERMISSIONS_REQUEST = 1;
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
-    private View mLayout;
-    private boolean useCamera2API;
 //    private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
     protected int previewWidth = 0;
     protected int previewHeight = 0;
+    private View mLayout;
+    private boolean useCamera2API;
     private boolean isProcessingFrame = false;
     private byte[][] yuvBytes = new byte[3][];
     private int[] rgbBytes = null;
@@ -55,6 +58,9 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
     private Runnable postInferenceCallback;
     private Runnable imageConverter;
     private boolean debug = false;
+    private Handler handler;
+    private HandlerThread handlerThread;
+    private byte[] lastPreviewFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +75,6 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
             requestPermission();
         }
     }
-
-    private Handler handler;
-    private HandlerThread handlerThread;
-
 
     /******************** Code Related to Runtime Permissions **********************/
     private boolean hasPermission() {
@@ -206,8 +208,6 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
         // deviceLevel is not LEGACY, can use numerical sort
         return requiredLevel <= deviceLevel;
     }
-
-    private byte[] lastPreviewFrame;
 
     /**
      * Callback for android.hardware.Camera API
@@ -350,7 +350,7 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
     }
 
     public void requestRender() {
-        final OverlayView overlay = (OverlayView) findViewById(R.id.debug_overlay);
+        final OverlayView overlay = findViewById(R.id.debug_overlay);
         if (overlay != null) {
             overlay.postInvalidate();
         }
@@ -374,7 +374,7 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
     }
 
     public void addCallback(final OverlayView.DrawCallback callback) {
-        final OverlayView overlay = (OverlayView) findViewById(R.id.debug_overlay);
+        final OverlayView overlay = findViewById(R.id.debug_overlay);
         if (overlay != null) {
             overlay.addCallback(callback);
         }

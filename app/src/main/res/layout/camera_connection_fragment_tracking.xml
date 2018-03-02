@@ -17,17 +17,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-      <com.example.ubuntu.seefood.AutoFitTextureView
+    <com.example.ubuntu.seefood.detector.AutoFitTextureView
           android:id="@+id/texture"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"/>
 
-      <com.example.ubuntu.seefood.OverlayView
+    <com.example.ubuntu.seefood.detector.OverlayView
           android:id="@+id/tracking_overlay"
           android:layout_width="match_parent"
           android:layout_height="match_parent"/>
 
-      <com.example.ubuntu.seefood.OverlayView
+    <com.example.ubuntu.seefood.detector.OverlayView
           android:id="@+id/debug_overlay"
           android:layout_width="match_parent"
           android:layout_height="match_parent"/>

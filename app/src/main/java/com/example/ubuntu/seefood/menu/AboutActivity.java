@@ -1,10 +1,13 @@
-package com.example.ubuntu.seefood;
+package com.example.ubuntu.seefood.menu;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.example.ubuntu.seefood.R;
+import com.example.ubuntu.seefood.detector.TensorFlowYoloDetector;
 
 /**
  * Created by ubuntu on 25/2/18.
@@ -21,7 +24,7 @@ public class AboutActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, TensorFlowYoloDetector.LABELS_SEEFOOD);
-        ListView listView = (ListView) findViewById(R.id.list);
+        ListView listView = findViewById(R.id.list);
         listView.setAdapter(mAdapter);
 
     }
