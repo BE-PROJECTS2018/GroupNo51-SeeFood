@@ -34,13 +34,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
         }
-        debug {
-            shrinkResources true
-            minifyEnabled true
-            useProguard true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                    'proguard-rules.pro'
-        }
     }
 }
 
@@ -69,7 +62,8 @@ dependencies {
     compile('com.facebook.android:facebook-android-sdk:4.27.0')
     // Required only if Twitter login support is required
     compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
-
+    // Floating action button
+    compile 'com.getbase:floatingactionbutton:1.10.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

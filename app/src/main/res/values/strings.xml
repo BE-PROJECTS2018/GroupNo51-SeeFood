@@ -41,5 +41,6 @@
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_out">Sign out</string>
 
+    <string name="action_test">Testing</string>
 
 </resources>

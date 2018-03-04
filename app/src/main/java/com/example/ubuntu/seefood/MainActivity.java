@@ -1,9 +1,12 @@
 package com.example.ubuntu.seefood;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ubuntu.seefood.detector.DetectorActivity;
+import com.example.ubuntu.seefood.detector.TensorFlowYoloDetector;
 import com.example.ubuntu.seefood.env.Logger;
 import com.example.ubuntu.seefood.menu.AboutActivity;
 import com.example.ubuntu.seefood.menu.SettingsActivity;
@@ -20,6 +24,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -50,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private ObjectAdapter mAdapter;
     private ListView objectListView;
     private TextView mWelcomeTextView;
+    private FloatingActionsMenu fab_menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +70,22 @@ public class MainActivity extends AppCompatActivity {
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab_menu = findViewById(R.id.left_labels);
+        com.getbase.floatingactionbutton.FloatingActionButton detect_fab = findViewById(R.id.detect_fab);
+        detect_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fab_menu.collapse();
                 Intent intent = new Intent(MainActivity.this, DetectorActivity.class);
-                startActivityForResult(intent,REQUEST_CODE);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
+        com.getbase.floatingactionbutton.FloatingActionButton edit_fab = findViewById(R.id.edit_fab);
+        edit_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fab_menu.collapse();
+                addIngredient();
             }
         });
 
@@ -109,6 +125,65 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
 
         fetchWelcome();
+    }
+
+    private void addIngredient() {
+//        LayoutInflater layoutInflater = this.getLayoutInflater();
+//        final  View inflator = layoutInflater.inflate(R.layout.dialog_add_ingredient,null);
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setView(inflator);
+//        final EditText et = inflator.findViewById(R.id.added_ingredient);
+//
+//        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int whichButton) {
+//                String value = et.getText().toString();
+//                Toast.makeText(getApplicationContext(),"Added: " + value, Toast.LENGTH_LONG).show();
+//            }
+//        });
+//
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int whichButton) {
+//                // what ever you want to do with No option.
+//            }
+//        });
+//        builder.show();
+
+        final ArrayList selectedItems = new ArrayList();  // Where we track the selected items
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Set the dialog title
+        builder.setTitle("Add Ingredients")
+                // Specify the list array, the items to be selected by default (null for none),
+                // and the listener through which to receive callbacks when items are selected
+                .setMultiChoiceItems(TensorFlowYoloDetector.LABELS_SEEFOOD, null,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which,
+                                                boolean isChecked) {
+                                if (isChecked) {
+                                    // If the user checked the item, add it to the selected items
+                                    selectedItems.add(which);
+                                } else if (selectedItems.contains(which)) {
+                                    // Else, if the item is already in the array, remove it
+                                    selectedItems.remove(Integer.valueOf(which));
+                                }
+                            }
+                        })
+                // Set the action buttons
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK, so save the mSelectedItems results somewhere
+                        // or return them to the component that opened the dialog
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+
+        builder.show();
     }
 
     /**
@@ -166,6 +241,14 @@ public class MainActivity extends AppCompatActivity {
         mWelcomeTextView.setText(welcomeMessage);
     }
     // [END display_welcome_message]
+
+    @Override
+    public void onBackPressed() {
+        if (fab_menu.isExpanded())
+            fab_menu.collapse();
+        else
+            super.onBackPressed();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -279,7 +362,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(aboutIntent);
             return true;
         } else if (id == R.id.action_sign_in) {
-            // Choose authentication providers
+            if (isOffline()) {
+                Toast.makeText(getApplicationContext(), "No network connection",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                // Choose authentication providers
 //            List<AuthUI.IdpConfig> providers = Arrays.asList(
 //                    new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
 //                    new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
@@ -287,18 +374,19 @@ public class MainActivity extends AppCompatActivity {
 //                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
 //                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
 
-            List<AuthUI.IdpConfig> providers = Arrays.asList(
-                    new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
-            // Create and launch sign-in intent
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(providers)
-                            .build(),
-                    RC_SIGN_IN);
+                List<AuthUI.IdpConfig> providers = Arrays.asList(
+                        new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+                // Create and launch sign-in intent
+                startActivityForResult(
+                        AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .build(),
+                        RC_SIGN_IN);
+            }
         } else if (id == R.id.action_sign_out) {
             AuthUI.getInstance()
                     .signOut(this)
@@ -313,5 +401,16 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private boolean isOffline() {
+        ConnectivityManager manager = (ConnectivityManager) getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return !(manager != null
+                && manager.getActiveNetworkInfo() != null
+                && manager.getActiveNetworkInfo().isConnectedOrConnecting());
+    }
+
+
 
 }
