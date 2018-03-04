@@ -227,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         // [END fetch_config_with_callback]
+        // Hehehehe
     }
 
     /**
