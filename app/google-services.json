@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "514740656986",
+    "firebase_url": "https://seefood-dd6eb.firebaseio.com",
+    "project_id": "seefood-dd6eb",
+    "storage_bucket": "seefood-dd6eb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514740656986:android:51d85f367168d358",
+        "android_client_info": {
+          "package_name": "com.example.ubuntu.seefood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514740656986-4knagbaj8ikkuh0m6com5u4brnv3jmh1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ubuntu.seefood",
+            "certificate_hash": "13f56869d34cafcc892777eeec07bda70afec630"
+          }
+        },
+        {
+          "client_id": "514740656986-dv68qjsnftgnodgiegvtn7sfteuni1iv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmRum-FmEDVxhhRnyO4LTiHjp2foSBUvQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "514740656986-dv68qjsnftgnodgiegvtn7sfteuni1iv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
