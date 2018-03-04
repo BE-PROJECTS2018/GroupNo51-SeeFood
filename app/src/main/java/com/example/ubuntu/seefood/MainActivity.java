@@ -411,6 +411,4 @@ public class MainActivity extends AppCompatActivity {
                 && manager.getActiveNetworkInfo().isConnectedOrConnecting());
     }
 
-
-
 }
