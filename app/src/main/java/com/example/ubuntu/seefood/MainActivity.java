@@ -228,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                 });
         // [END fetch_config_with_callback]
         // Replace this function with user preferences fetch method
-
     }
 
     /**
