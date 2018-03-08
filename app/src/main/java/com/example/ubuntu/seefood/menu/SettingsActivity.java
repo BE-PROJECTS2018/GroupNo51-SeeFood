@@ -9,6 +9,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.example.ubuntu.seefood.R;
 import com.example.ubuntu.seefood.env.Logger;
@@ -21,6 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static final String DETECTOR_NAME = "detector_name";
     private static final Logger LOGGER = new Logger();
+    // This result code is updated only when onPreferenceChange() method is called
     private static int RESULT_CODE = 0;
     private static String stringValue;
 
@@ -28,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -44,6 +46,19 @@ public class SettingsActivity extends AppCompatActivity {
         }
         setResult(RESULT_CODE, intent);
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
     }
 
     public static class DetectorPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener{
