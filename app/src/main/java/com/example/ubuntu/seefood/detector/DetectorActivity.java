@@ -15,8 +15,10 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Size;
 import android.util.TypedValue;
+import android.view.View;
 
 import com.example.ubuntu.seefood.CameraActivity;
+import com.example.ubuntu.seefood.ListActivity;
 import com.example.ubuntu.seefood.R;
 import com.example.ubuntu.seefood.env.BorderedText;
 import com.example.ubuntu.seefood.env.ImageUtils;
@@ -289,9 +291,8 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
 
     /******************** Code to return detected objects to the CameraActivity.java ******************/
 
-    @Override
-    public void finish() {
-        Intent data = new Intent();
+    public void closeCameraActivity(View view) {
+        Intent intent = getIntent();
         Bundle resultsBundle = new Bundle();
 
         int counter=1;
@@ -299,9 +300,16 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
             resultsBundle.putString("Object" + counter++,
                     "Class:" + recognition.getTitle() + ", Confidence:" + recognition.getConfidence()*100);
         }
-        data.putExtra("resultsBundle", resultsBundle);
-        setResult(RESULT_OK, data);
-        super.finish();
+
+        intent.putExtra("resultsBundle", resultsBundle);
+        if (intent.getStringExtra("FromActivity").equals("MainActivity")) {
+            intent.setClass(DetectorActivity.this, ListActivity.class);
+            intent.putExtra("FromActivity", "DetectorActivity");
+            startActivity(intent);
+        } else if (intent.getStringExtra("FromActivity").equals("ListActivity")) {
+            setResult(RESULT_OK, intent);
+        }
+        finish();
     }
 
     // Which detection model to use: by default uses Tensorflow Object Detection API frozen
@@ -310,4 +318,5 @@ public class DetectorActivity extends CameraActivity implements ImageReader.OnIm
     private enum DetectorMode {
         TF_OD_API, MULTIBOX, YOLO
     }
+
 }

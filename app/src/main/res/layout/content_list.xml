@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.ubuntu.seefood.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context="com.example.ubuntu.seefood.ListActivity"
+    tools:showIn="@layout/activity_list">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -23,19 +23,19 @@
 
         <ListView
             android:id="@+id/list"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:dividerHeight="0dp"/>
+            android:dividerHeight="0dp"
+            android:orientation="vertical" />
 
         <TextView
             android:id="@+id/no_objects_found"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_objects_found"
             android:layout_centerInParent="true"
-            android:textSize="18sp"
-            android:textAlignment="center"/>
+            android:text="@string/no_objects_found"
+            android:textAlignment="center"
+            android:textSize="18sp" />
 
     </RelativeLayout>
 

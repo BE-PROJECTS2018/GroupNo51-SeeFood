@@ -10,6 +10,6 @@
     </entry>
     <entry>
         <key>welcome_message</key>
-        <value>No items found. Start detection by clicking the camera icon!</value>
+        <value>Start detection by clicking the camera icon!</value>
     </entry>
 </defaultsMap><!-- END xml_defaults -->

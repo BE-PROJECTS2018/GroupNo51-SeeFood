@@ -463,9 +463,8 @@ public abstract class CameraActivity extends Activity implements ImageReader.OnI
     protected abstract Size getDesiredPreviewFrameSize();
 
     /************************************* Button onClick ************************************/
-    public void closeCameraActivity(View view) {
-        finish();
-    }
+    public abstract void closeCameraActivity(View view);
+
 //    protected int getLayoutId(){
 //        return R.layout.camera_connection_fragment_tracking;
 //    }

@@ -22,7 +22,7 @@
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="65dp"
         android:onClick="closeCameraActivity"
-        android:text="@string/camera_close_button"
+        android:text="@string/camera_finish_button"
         />
 
     </FrameLayout>
