@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,13 +23,14 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
  * Created by ubuntu on 7/3/18.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppBaseActivity {
 
     private static final String LOADING_PHRASE_CONFIG_KEY = "loading_phrase";
     private static String WELCOME_MESSAGE_KEY = "welcome_message";
     private TextView mWelcomeTextView;
     private FirebaseAnalytics mFirebaseAnalytics;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         // information.
         mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
 
-        fetchWelcome();
+        //fetchWelcome();
     }
 
     /**

@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboard"
@@ -24,10 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ListActivity"
             android:configChanges="orientation|screenSize|keyboard"
-            android:label="@string/activity_list"></activity>
+            android:label="@string/activity_list">
+
+        </activity>
 
         <activity
             android:name=".detector.DetectorActivity"
@@ -38,15 +42,13 @@
 
         <activity
             android:name=".menu.SettingsActivity"
-            android:label="@string/detector_settings_title"
-            android:parentActivityName=".ListActivity">
+            android:label="@string/detector_settings_title">
         </activity>
 
         <activity
             android:name=".menu.AboutActivity"
             android:configChanges="orientation|screenSize|keyboard"
-            android:label="@string/activity_about"
-            android:parentActivityName=".ListActivity">
+            android:label="@string/activity_about">
         </activity>
 
         <meta-data

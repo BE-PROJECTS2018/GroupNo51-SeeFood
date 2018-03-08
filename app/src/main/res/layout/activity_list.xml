@@ -51,7 +51,7 @@
             fab:fab_colorPressed="@color/white_pressed"
             fab:fab_icon="@android:drawable/ic_menu_view"
             fab:fab_size="normal"
-            fab:fab_title="Start detection" />
+            fab:fab_title="Detect Again" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

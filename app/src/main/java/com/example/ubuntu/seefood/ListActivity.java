@@ -1,46 +1,27 @@
 package com.example.ubuntu.seefood;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ubuntu.seefood.detector.DetectorActivity;
 import com.example.ubuntu.seefood.detector.TensorFlowYoloDetector;
 import com.example.ubuntu.seefood.env.Logger;
-import com.example.ubuntu.seefood.menu.AboutActivity;
-import com.example.ubuntu.seefood.menu.SettingsActivity;
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
-public class ListActivity extends AppCompatActivity {
+public class ListActivity extends AppBaseActivity {
 
     // Remote Config keys
-    private static final int RC_SIGN_IN = 123;
     private final int REQUEST_CODE = 1;
     private final int RESULT_CODE_DETECTOR = 2;
-    private final int RESULT_CODE_SETTINGS = 3;
     private Logger LOGGER = new Logger();
     private ArrayList<String> objects;
     private ObjectAdapter mAdapter;
@@ -83,25 +64,6 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void addIngredient() {
-//        LayoutInflater layoutInflater = this.getLayoutInflater();
-//        final  View inflator = layoutInflater.inflate(R.layout.dialog_add_ingredient,null);
-//        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setView(inflator);
-//        final EditText et = inflator.findViewById(R.id.added_ingredient);
-//
-//        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int whichButton) {
-//                String value = et.getText().toString();
-//                Toast.makeText(getApplicationContext(),"Added: " + value, Toast.LENGTH_LONG).show();
-//            }
-//        });
-//
-//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int whichButton) {
-//                // what ever you want to do with No option.
-//            }
-//        });
-//        builder.show();
 
         final ArrayList selectedItems = new ArrayList();  // Where we track the selected items
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -152,27 +114,10 @@ public class ListActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_CODE_DETECTOR && requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_CODE_DETECTOR) {
             displayDetectedObjectsSummary(data);
-        } else if (resultCode == RESULT_CODE_SETTINGS && requestCode == REQUEST_CODE) {
-            Toast.makeText(getApplicationContext(), "Detector : "
-                    + data.getStringExtra(SettingsActivity.DETECTOR_NAME), Toast.LENGTH_LONG).show();
-        } else if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                Toast.makeText(getApplicationContext(), "Welcome " + user.getDisplayName(),
-                        Toast.LENGTH_LONG).show();
-                invalidateOptionsMenu();
-            } else {
-                // Sign in failed, check response for error code
-                Toast.makeText(getApplicationContext(), "Error: " + response,
-                        Toast.LENGTH_LONG).show();
-            }
         } else {
-            //Toast.makeText(getApplicationContext(),"Request and result code don't match!",Toast.LENGTH_LONG).show();
-            LOGGER.d("Request and result code don't match!");
+            LOGGER.d("Request and result code might match in AppBaseActivity!");
         }
     }
 
@@ -227,87 +172,5 @@ public class ListActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem sign_in_item = menu.findItem(R.id.action_sign_in);
-        MenuItem sign_out_item = menu.findItem(R.id.action_sign_out);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        LOGGER.d("onCreateOptionsMenu called!");
-        if (user == null) {
-            sign_out_item.setVisible(false);
-        } else {
-            sign_in_item.setVisible(false);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        LOGGER.d("onOptionsItemSelected called!");
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent settingsIntent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(settingsIntent, 1);
-            return true;
-        } else if (id == R.id.action_about) {
-            Intent aboutIntent = new Intent(this, AboutActivity.class);
-            startActivity(aboutIntent);
-            return true;
-        } else if (id == R.id.action_sign_in) {
-            if (isOffline()) {
-                Toast.makeText(getApplicationContext(), "No network connection",
-                        Toast.LENGTH_LONG).show();
-            } else {
-                // Choose authentication providers
-//            List<AuthUI.IdpConfig> providers = Arrays.asList(
-//                    new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-//                    new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
-//                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-//                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-//                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
-
-                List<AuthUI.IdpConfig> providers = Arrays.asList(
-                        new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                        new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                        new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
-                // Create and launch sign-in intent
-                startActivityForResult(
-                        AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .setAvailableProviders(providers)
-                                .build(),
-                        RC_SIGN_IN);
-            }
-        } else if (id == R.id.action_sign_out) {
-            AuthUI.getInstance()
-                    .signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(getApplicationContext(), "Signed out successfully",
-                                    Toast.LENGTH_LONG).show();
-                            invalidateOptionsMenu();
-                        }
-                    });
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private boolean isOffline() {
-        ConnectivityManager manager = (ConnectivityManager) getApplicationContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return !(manager != null
-                && manager.getActiveNetworkInfo() != null
-                && manager.getActiveNetworkInfo().isConnectedOrConnecting());
-    }
 
 }
