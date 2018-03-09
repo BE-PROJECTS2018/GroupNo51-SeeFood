@@ -54,6 +54,7 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
     private ActionBarDrawerToggle mDrawerToggle;
     private Menu drawerMenu;
     private Logger LOGGER = new Logger();
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,8 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
         for (int i = 0; i < drawerMenu.size(); i++) {
             drawerMenu.getItem(i).setOnMenuItemClickListener(this);
         }
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
             drawerMenu.getItem(1).setVisible(false);
         } else {
@@ -159,7 +161,7 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseUser user = mAuth.getCurrentUser();
                 Toast.makeText(getApplicationContext(), "Welcome " + user.getDisplayName(),
                         Toast.LENGTH_LONG).show();
                 drawerMenu.getItem(0).setVisible(false);

@@ -64,16 +64,13 @@ public class MainActivity extends AppBaseActivity {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
 //        // Testing firebase crashlytics implementation
-//        Button crashButton = new Button(this);
+//        Button crashButton = findViewById(R.id.crash_button);
 //        crashButton.setText("Crash!");
 //        crashButton.setOnClickListener(new View.OnClickListener() {
 //            public void onClick(View view) {
 //                Crashlytics.getInstance().crash(); // Force a crash
 //            }
 //        });
-//        addContentView(crashButton,
-//                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                        ViewGroup.LayoutParams.WRAP_CONTENT));
 
         // Get Remote Config instance.
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -92,7 +89,7 @@ public class MainActivity extends AppBaseActivity {
         // information.
         mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
 
-        //fetchWelcome();
+        fetchWelcome();
     }
 
     /**

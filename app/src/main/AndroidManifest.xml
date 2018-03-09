@@ -42,6 +42,7 @@
 
         <activity
             android:name=".menu.SettingsActivity"
+            android:configChanges="orientation|screenSize|keyboard"
             android:label="@string/detector_settings_title">
         </activity>
 
