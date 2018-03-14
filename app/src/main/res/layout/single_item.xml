@@ -102,7 +102,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|center_vertical"
-                        android:text="INGRIDIENTS"
+                        android:text="INGREDIENTS"
                         android:textColor="@color/cardview_light_background"
                         android:textSize="36sp" />
 

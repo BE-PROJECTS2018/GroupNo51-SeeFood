@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -12,6 +13,11 @@ import com.example.ubuntu.seefood.detector.DetectorActivity;
 import com.example.ubuntu.seefood.detector.TensorFlowYoloDetector;
 import com.example.ubuntu.seefood.env.Logger;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -57,11 +63,39 @@ public class ListActivity extends AppBaseActivity {
             }
         });
 
+        com.getbase.floatingactionbutton.FloatingActionButton fetch_recipe_fab = findViewById(R.id.fetch_recipe_fab);
+        fetch_recipe_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fab_menu.collapse();
+                LOGGER.d("fetch_recipe_fab pressed");
+                startFetchingRecipes();
+            }
+        });
+
         Intent intent = getIntent();
         if (intent.getStringExtra("FromActivity").equals("DetectorActivity")) {
             displayDetectedObjectsSummary(intent);
         }
 
+    }
+
+    private void startFetchingRecipes() {
+        FirebaseFirestore firestoreDb = FirebaseFirestore.getInstance();
+        String userEmail = mAuth.getCurrentUser().getEmail();
+        DocumentReference docRef = firestoreDb.collection("users").document(userEmail);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                UserPreferences prefs = documentSnapshot.toObject(UserPreferences.class);
+                // Call intent from here
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                LOGGER.d("Failed to get document snapshot!");
+            }
+        });
     }
 
     private void addIngredient() {
