@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.example.ubuntu.seefood.detector.DetectorActivity;
 import com.example.ubuntu.seefood.detector.TensorFlowYoloDetector;
 import com.example.ubuntu.seefood.env.Logger;
+import com.example.ubuntu.seefood.recipes.RecipesActivity;
+import com.example.ubuntu.seefood.recipes.YummlyResultsActivity;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,9 +21,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 public class ListActivity extends AppBaseActivity {
 
@@ -35,6 +41,8 @@ public class ListActivity extends AppBaseActivity {
     private ListView objectListView;
     private TextView mWelcomeTextView;
     private FloatingActionsMenu fab_menu;
+
+    private StringBuilder listOfIngridients;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +97,63 @@ public class ListActivity extends AppBaseActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 UserPreferences prefs = documentSnapshot.toObject(UserPreferences.class);
                 // Call intent from here
+
+                String url = "recipes?_app_id=94931240&_app_key=e33572938a728cc2e9a831c955c6fbad";
+                StringBuilder params = new StringBuilder(url);
+                params.append("&");
+
+                StringTokenizer tokenizer = new StringTokenizer(listOfIngridients.toString(), ";");
+                while (tokenizer.hasMoreElements()){
+                    String curr = tokenizer.nextToken();
+                    params.append("allowedIngredient[]="+curr+"&");
+                }
+
+                for(Map.Entry<String, Boolean> entry:((HashMap<String, Boolean>)prefs.getAllergies()).entrySet()){
+                    if(entry.getValue()){
+                        params.append("allowedAllergy[]=" + entry.getKey() + "&");
+                    }
+                }
+
+                for(Map.Entry<String, Boolean> entry:((HashMap<String, Boolean>)prefs.getCourses()).entrySet()){
+                    if(entry.getValue()){
+                        params.append("allowedCourse[]=" + entry.getKey() + "&");
+                    }
+                }
+
+                for(Map.Entry<String, Boolean> entry:((HashMap<String, Boolean>)prefs.getCuisines()).entrySet()){
+                    if(entry.getValue()){
+                        params.append("allowedCuisine[]=" + entry.getKey() + "&");
+                    }
+                }
+
+                for(Map.Entry<String,Boolean> entry:((HashMap<String,Boolean>)prefs.getDiet()).entrySet()){
+                    if(entry.getValue()){
+                        params.append("allowedDiet[]=" + entry.getKey() + "&");
+                    }
+                }
+
+                for(Map.Entry<String,Boolean> entry:((HashMap<String,Boolean>)prefs.getFlavors()).entrySet()){
+                    if(entry.getValue()){
+                        String curr = entry.getKey();
+                        curr = curr.toLowerCase();
+                        StringBuilder temp = new StringBuilder("flavor." + curr + ".min=0.7&flavor." + curr + ".max=1&");
+                        params.append(temp.toString());
+                    }
+                }
+
+                Integer totTime = (Integer)prefs.getMaxPrepTimeInSeconds();
+                if(totTime!=0){
+                    params.append("maxTotalTimeInSeconds=" + totTime + "&");
+                }
+
+                params.deleteCharAt(params.length() - 1);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("params", params.toString());
+                Intent intent = new Intent(ListActivity.this, YummlyResultsActivity.class);
+                intent.putExtra("bundle", bundle);
+                startActivity(intent);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -193,7 +258,10 @@ public class ListActivity extends AppBaseActivity {
         for (String class_key : classCount.keySet()) {
             int count = classCount.get(class_key);
             objects.add(class_key + "," + count + "," + df.format(classConfidence.get(class_key) / count));
+            listOfIngridients.append(class_key).append(";");
         }
+
+
 
         // Code to populate ListView using above objects ArrayList
         mAdapter = new ObjectAdapter(this, objects);
