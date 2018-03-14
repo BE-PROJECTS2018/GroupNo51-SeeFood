@@ -289,7 +289,6 @@
                                     android:text="Meaty"
                                     android:textColor="@color/cardview_light_background"
                                     android:textSize="24sp" />
-
                                 <SeekBar
                                     android:id="@+id/meatySeekBar"
                                     android:layout_width="0dp"

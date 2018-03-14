@@ -2,14 +2,14 @@ package com.example.ubuntu.seefood.recipes;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 /**
  * Created by jayesh on 11/3/18.
  */
 
-public class MyTextView extends TextView {
+public class MyTextView extends AppCompatTextView {
 
     public MyTextView(Context context) {
         super(context);
