@@ -33,34 +33,47 @@ import android.widget.Toast;
 
 import com.example.ubuntu.seefood.env.Logger;
 import com.example.ubuntu.seefood.menu.AboutActivity;
+import com.example.ubuntu.seefood.menu.PreferencesActivity;
 import com.example.ubuntu.seefood.menu.SettingsActivity;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AppBaseActivity extends AppCompatActivity implements MenuItem.OnMenuItemClickListener {
     private static final int RC_SIGN_IN = 123;
     private final int REQUEST_CODE = 0;
     private final int RESULT_CODE_SETTINGS = 3;
+    public FirebaseAuth mAuth;
     private FrameLayout view_stub; //This is the framelayout to keep your content view
     private NavigationView navigation_view; // The new navigation view from Android Design Library. Can inflate menu resources. Easy
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private Menu drawerMenu;
     private Logger LOGGER = new Logger();
-    private FirebaseAuth mAuth;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // The base layout that contains your navigation drawer.
         super.setContentView(R.layout.app_base_layout);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         view_stub = findViewById(R.id.content_frame);
         navigation_view = findViewById(R.id.nav_view);
@@ -76,8 +89,10 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
+            // Hide the "Sign out" option
             drawerMenu.getItem(1).setVisible(false);
         } else {
+            // Hide the "Sign in" option
             drawerMenu.getItem(0).setVisible(false);
         }
         // and so on...
@@ -166,6 +181,7 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
                         Toast.LENGTH_LONG).show();
                 drawerMenu.getItem(0).setVisible(false);
                 drawerMenu.getItem(1).setVisible(true);
+                completePendingTasksOnSignIn();
             } else {
                 // Sign in failed, check response for error code
                 Toast.makeText(getApplicationContext(), "Error: " + response,
@@ -177,14 +193,22 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         LOGGER.d("onMenuItemClick called!");
+        Bundle bundle;
         switch (menuItem.getItemId()) {
             case R.id.action_sign_in:
-                mDrawerLayout.closeDrawers();
+
+                // Use this template at various places in your app to record user clicks
+                bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "action_sign_in");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Sign in button");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "user_clicks");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
                 if (isOffline()) {
                     Toast.makeText(getApplicationContext(), "No network connection",
                             Toast.LENGTH_LONG).show();
                 } else {
+                    mDrawerLayout.closeDrawers();
                     // Choose authentication providers
 //            List<AuthUI.IdpConfig> providers = Arrays.asList(
 //                    new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
@@ -194,7 +218,6 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
 //                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
 
                     List<AuthUI.IdpConfig> providers = Arrays.asList(
-                            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
                             new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
                             new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
@@ -203,11 +226,19 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
                                     .setAvailableProviders(providers)
+                                    .setLogo(R.mipmap.ic_launcher)
                                     .build(),
                             RC_SIGN_IN);
                 }
                 break;
             case R.id.action_sign_out:
+                // Use this template at various places in your app to record user clicks
+                bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "action_sign_out");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Sign out button");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "user_clicks");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
                 mDrawerLayout.closeDrawers();
                 AuthUI.getInstance()
                         .signOut(this)
@@ -215,17 +246,48 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
                             public void onComplete(@NonNull Task<Void> task) {
                                 Toast.makeText(getApplicationContext(), "Signed out successfully",
                                         Toast.LENGTH_LONG).show();
+                                completePendingTasksOnSignOut();
                                 drawerMenu.getItem(0).setVisible(true);
                                 drawerMenu.getItem(1).setVisible(false);
                             }
                         });
                 break;
+            case R.id.action_recipe_prefs:
+                // Use this template at various places in your app to record user clicks
+                bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "action_recipe_prefs");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Preferences button");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "user_clicks");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+                if (mAuth.getCurrentUser() == null) {
+                    Toast.makeText(getApplicationContext(), "Please Sign In!", Toast.LENGTH_LONG).show();
+                } else {
+                    mDrawerLayout.closeDrawers();
+                    Intent prefsIntent = new Intent(this, PreferencesActivity.class);
+                    startActivity(prefsIntent);
+                }
+                break;
             case R.id.action_settings:
+                // Use this template at various places in your app to record user clicks
+                bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "action_settings");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Settings button");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "user_clicks");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
                 mDrawerLayout.closeDrawers();
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(settingsIntent, REQUEST_CODE);
                 break;
             case R.id.action_about:
+                // Use this template at various places in your app to record user clicks
+                bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "action_about");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "About button");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "user_clicks");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
                 mDrawerLayout.closeDrawers();
                 Intent aboutIntent = new Intent(this, AboutActivity.class);
                 startActivity(aboutIntent);
@@ -234,7 +296,6 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
         return false;
     }
 
-
     private boolean isOffline() {
         ConnectivityManager manager = (ConnectivityManager) getApplicationContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -242,5 +303,105 @@ public abstract class AppBaseActivity extends AppCompatActivity implements MenuI
         return !(manager != null
                 && manager.getActiveNetworkInfo() != null
                 && manager.getActiveNetworkInfo().isConnectedOrConnecting());
+    }
+
+    protected void completePendingTasksOnSignIn() {
+        setupUserDatabase();
+    }
+
+    private void setupUserDatabase() {
+        // Accessing Cloud Firestore instance
+        FirebaseFirestore firestoreDb = FirebaseFirestore.getInstance();
+        final String userName = mAuth.getCurrentUser().getDisplayName();
+        final String userEmail = mAuth.getCurrentUser().getEmail();
+        final String userPhnNumber = mAuth.getCurrentUser().getPhoneNumber();
+        final DocumentReference docRef = firestoreDb.collection("users").document(userEmail);
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        LOGGER.d("User " + userName + " already exists, synchronizing!");
+                        synchronizeUserPreferences(docRef);
+                    } else {
+                        LOGGER.d("Setting up userPreferences for the first time!");
+
+                        String userPhoto;
+                        try {
+                            userPhoto = mAuth.getCurrentUser().getPhotoUrl().toString();
+                        } catch (Exception e) {
+                            LOGGER.d("No userPhoto found! " + e);
+                            userPhoto = null;
+                        }
+
+                        UserPreferences prefs = setupUserPreferences(userName, userEmail, userPhoto, userPhnNumber);
+                        docRef.set(prefs)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        LOGGER.d("User " + userName + "'s database initialised!");
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                LOGGER.d("Error intialising " + userName + "'s database!");
+                            }
+                        });
+
+                    }
+                }
+            }
+        });
+    }
+
+    public void synchronizeUserPreferences(DocumentReference docRef) {
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                UserPreferences prefs = documentSnapshot.toObject(UserPreferences.class);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+    }
+
+    protected UserPreferences setupUserPreferences(String userName, String userEmail, String userPhoto, String userPhnNumber) {
+        String arr[] = getResources().getStringArray(R.array.allergy_values);
+        Map<String, Boolean> allergies = new HashMap<>();
+        for (String s : arr) {
+            allergies.put(s, false);
+        }
+        arr = getResources().getStringArray(R.array.courses_values);
+        Map<String, Boolean> courses = new HashMap<>();
+        for (String s : arr) {
+            courses.put(s, false);
+        }
+        arr = getResources().getStringArray(R.array.cuisines_values);
+        Map<String, Boolean> cuisines = new HashMap<>();
+        for (String s : arr) {
+            cuisines.put(s, false);
+        }
+        arr = getResources().getStringArray(R.array.diet_values);
+        Map<String, Boolean> diet = new HashMap<>();
+        for (String s : arr) {
+            diet.put(s, false);
+        }
+        arr = getResources().getStringArray(R.array.flavor_values);
+        Map<String, Boolean> flavors = new HashMap<>();
+        for (String s : arr) {
+            flavors.put(s, false);
+        }
+        return new UserPreferences(userName, userEmail, userPhoto, userPhnNumber, allergies, courses,
+                cuisines, diet, flavors, 0);
+    }
+
+    protected void completePendingTasksOnSignOut() {
     }
 }

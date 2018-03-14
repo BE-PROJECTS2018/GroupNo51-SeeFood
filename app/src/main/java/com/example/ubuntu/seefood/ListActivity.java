@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 public class ListActivity extends AppBaseActivity {
 
+    private static final String TAG = "ListActivity";
     // Remote Config keys
     private final int REQUEST_CODE = 1;
     private final int RESULT_CODE_DETECTOR = 2;
@@ -172,5 +173,11 @@ public class ListActivity extends AppBaseActivity {
         }
     }
 
+    protected void completePendingTasksOnSignIn() {
+        super.completePendingTasksOnSignIn();
+    }
 
+    protected void completePendingTasksOnSignOut() {
+
+    }
 }
