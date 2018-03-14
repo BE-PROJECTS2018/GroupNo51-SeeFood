@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/detector_settings_title">
+    android:title="@string/activity_detector_settings">
 
     <ListPreference
         android:defaultValue="@string/settings_detector_default"

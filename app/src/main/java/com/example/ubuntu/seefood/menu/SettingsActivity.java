@@ -29,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
+        setContentView(R.layout.activity_settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -66,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.settings_xml);
+            addPreferencesFromResource(R.xml.settings);
 
             Preference detector = findPreference(getString(R.string.settings_detector_key));
             bindPreferenceSummaryToValue(detector);

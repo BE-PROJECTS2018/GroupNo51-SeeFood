@@ -3,8 +3,13 @@
     package="com.example.ubuntu.seefood">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -15,41 +20,49 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboard"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ListActivity"
             android:configChanges="orientation|screenSize|keyboard"
-            android:label="@string/activity_list">
-
-        </activity>
-
+            android:label="@string/activity_list" />
         <activity
             android:name=".detector.DetectorActivity"
             android:label="@string/activity_camera"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".menu.SettingsActivity"
-            android:label="@string/detector_settings_title">
-        </activity>
-
+            android:configChanges="orientation|screenSize|keyboard"
+            android:label="@string/activity_detector_settings" />
         <activity
             android:name=".menu.AboutActivity"
             android:configChanges="orientation|screenSize|keyboard"
-            android:label="@string/activity_about">
-        </activity>
+            android:label="@string/activity_about" />
+        <activity
+            android:name=".menu.PreferencesActivity"
+            android:configChanges="orientation|screenSize|keyboard"
+            android:label="@string/activity_prefs" />
+        <activity
+            android:name=".recipes.RecipesActivity"
+            android:configChanges="orientation|screenSize|keyboard"
+            android:label="RecipesActivity" />
+        <activity
+            android:name=".recipes.RecipeResultsActivity"
+            android:configChanges="orientation|screenSize|keyboard"
+            android:label="RecipeResultsActivity" />
+        <activity
+            android:name=".recipes.YummlyResultsActivity"
+            android:configChanges="orientation|screenSize|keyboard"
+            android:label="YummlyResultsActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -71,8 +84,6 @@
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-
     </application>
 
 </manifest>
