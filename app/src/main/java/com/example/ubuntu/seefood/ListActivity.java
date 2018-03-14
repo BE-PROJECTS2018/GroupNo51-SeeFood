@@ -14,6 +14,7 @@ import com.example.ubuntu.seefood.detector.TensorFlowYoloDetector;
 import com.example.ubuntu.seefood.env.Logger;
 import com.example.ubuntu.seefood.recipes.RecipesActivity;
 import com.example.ubuntu.seefood.recipes.YummlyResultsActivity;
+import com.example.ubuntu.seefood.recipes.RecipeResultsActivity;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -78,6 +79,20 @@ public class ListActivity extends AppBaseActivity {
                 fab_menu.collapse();
                 LOGGER.d("fetch_recipe_fab pressed");
                 startFetchingRecipes();
+            }
+        });
+
+        com.getbase.floatingactionbutton.FloatingActionButton fetch_sample_fab = findViewById(R.id.fetch_sample_fab);
+        fetch_sample_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fab_menu.collapse();
+                LOGGER.d("fetch_sample_fab pressed");
+                Bundle bundle = new Bundle();
+                bundle.putString("param", "Sample Call");
+                Intent intent = new Intent(ListActivity.this, RecipeResultsActivity.class);
+                intent.putExtra("bundle", bundle);
+                startActivity(intent);
             }
         });
 

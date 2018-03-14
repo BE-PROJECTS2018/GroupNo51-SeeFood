@@ -63,6 +63,16 @@
             fab:fab_size="normal"
             fab:fab_title="Fetch recipes" />
 
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fetch_sample_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@android:drawable/ic_menu_search"
+            fab:fab_size="normal"
+            fab:fab_title="Sample call" />
+
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </RelativeLayout>
