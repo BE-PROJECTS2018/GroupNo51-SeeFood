@@ -58,11 +58,13 @@
         <activity
             android:name=".recipes.RecipeResultsActivity"
             android:configChanges="orientation|screenSize|keyboard"
-            android:label="RecipeResultsActivity" />
+            android:label="Sample Recipes | SeeFood"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".recipes.YummlyResultsActivity"
             android:configChanges="orientation|screenSize|keyboard"
-            android:label="YummlyResultsActivity" />
+            android:label="Recipes | SeeFood"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

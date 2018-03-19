@@ -16,13 +16,13 @@ public class UserPreferences {
     public Map<String, Boolean> cuisines;
     public Map<String, Boolean> diet;
     public Map<String, Boolean> flavors;
-    public Integer maxPrepTimeInSeconds;
+    public String maxPrepTimeInSeconds;
 
     public UserPreferences() {
     }
 
     public UserPreferences(String name, String email, String photoUrl, String phoneNumber, Map<String, Boolean> aller, Map<String, Boolean> cour,
-                           Map<String, Boolean> cuis, Map<String, Boolean> diet, Map<String, Boolean> flavors, Integer maxPrepTimeInSeconds) {
+                           Map<String, Boolean> cuis, Map<String, Boolean> diet, Map<String, Boolean> flavors, String maxPrepTimeInSeconds) {
         this.userName = name;
         this.userEmail = email;
         this.userPhoto = photoUrl;
@@ -71,7 +71,7 @@ public class UserPreferences {
         return flavors;
     }
 
-    public Object getMaxPrepTimeInSeconds() {
+    public String getMaxPrepTimeInSeconds() {
         return maxPrepTimeInSeconds;
     }
 }

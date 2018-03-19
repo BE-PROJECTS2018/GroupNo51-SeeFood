@@ -15,11 +15,11 @@
     <string name="settings_detector_default" translatable="false">@string/settings_detector_seefood_value</string>
 
     <!-- Label for detector ms coco option [CHAR LIMIT=20] -->
-    <string name="settings_detector_ms_coco_label">MS COCO</string>
-    <string name="settings_detector_ms_coco_value" translatable="false">tiny-yolo.pb</string>
+    <string name="settings_detector_ms_coco_label">SeeFood COCO</string>
+    <string name="settings_detector_ms_coco_value" translatable="false">tiny-yolo-coco-4c.pb</string>
 
     <!-- Label for detector seefood option [CHAR LIMIT=20] -->
-    <string name="settings_detector_seefood_label">SeeFood</string>
+    <string name="settings_detector_seefood_label">SeeFood VOC</string>
     <string name="settings_detector_seefood_value" translatable="false">tiny-yolo-voc-3c.pb</string>
 
     <!-- Strings For Detector Preference [CHAR LIMIT=30] -->

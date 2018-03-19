@@ -5,16 +5,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.GravityCompat;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ubuntu.seefood.detector.DetectorActivity;
 import com.example.ubuntu.seefood.detector.TensorFlowYoloDetector;
 import com.example.ubuntu.seefood.env.Logger;
-import com.example.ubuntu.seefood.recipes.RecipesActivity;
-import com.example.ubuntu.seefood.recipes.YummlyResultsActivity;
 import com.example.ubuntu.seefood.recipes.RecipeResultsActivity;
+import com.example.ubuntu.seefood.recipes.YummlyResultsActivity;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,11 +23,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -43,7 +42,7 @@ public class ListActivity extends AppBaseActivity {
     private TextView mWelcomeTextView;
     private FloatingActionsMenu fab_menu;
 
-    private StringBuilder listOfIngridients;
+    private StringBuilder listOfIngredients;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +104,10 @@ public class ListActivity extends AppBaseActivity {
 
     private void startFetchingRecipes() {
         FirebaseFirestore firestoreDb = FirebaseFirestore.getInstance();
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(getApplicationContext(), "Please Sign In!", Toast.LENGTH_LONG).show();
+            return;
+        }
         String userEmail = mAuth.getCurrentUser().getEmail();
         DocumentReference docRef = firestoreDb.collection("users").document(userEmail);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -117,7 +120,20 @@ public class ListActivity extends AppBaseActivity {
                 StringBuilder params = new StringBuilder(url);
                 params.append("&");
 
-                StringTokenizer tokenizer = new StringTokenizer(listOfIngridients.toString(), ";");
+                listOfIngredients = new StringBuilder();
+                String[] classKey;
+                for (String classSet : objects) {
+                    classKey = classSet.split(",");
+                    listOfIngredients.append(classKey[0]).append(";");
+                }
+
+                StringTokenizer tokenizer = new StringTokenizer(listOfIngredients.toString(), ";");
+                if (listOfIngredients.toString().equals("")) {
+                    LOGGER.d("listOfIngredients is empty! ");
+                    Toast.makeText(getApplicationContext(), "No items in the detected list!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 while (tokenizer.hasMoreElements()){
                     String curr = tokenizer.nextToken();
                     params.append("allowedIngredient[]="+curr+"&");
@@ -156,7 +172,7 @@ public class ListActivity extends AppBaseActivity {
                     }
                 }
 
-                Integer totTime = (Integer)prefs.getMaxPrepTimeInSeconds();
+                Integer totTime = Integer.parseInt(prefs.getMaxPrepTimeInSeconds());
                 if(totTime!=0){
                     params.append("maxTotalTimeInSeconds=" + totTime + "&");
                 }
@@ -174,19 +190,38 @@ public class ListActivity extends AppBaseActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 LOGGER.d("Failed to get document snapshot!");
+                Toast.makeText(getApplicationContext(), "Failed to fetch recipes!", Toast.LENGTH_LONG).show();
             }
         });
     }
 
+    // TODO : Please replace this shit !
     private void addIngredient() {
-
-        final ArrayList selectedItems = new ArrayList();  // Where we track the selected items
+        // We track the selected items using ArrayList
+        final ArrayList<Integer> selectedItems = new ArrayList<>();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Creating boolean checkedItems array
+        String[] classKey;
+        Map<String, Boolean> checkedItems = new HashMap<>();
+        for (String classSet : objects) {
+            classKey = classSet.split(",");
+            LOGGER.d("Added ingredient " + classKey[0]);
+            checkedItems.put(classKey[0], true);
+        }
+        final boolean checkedItemsList[] = new boolean[TensorFlowYoloDetector.LABELS_SEEFOOD_VOC.length];
+        LOGGER.d("TensorFlowYoloDetector.LABELS_SEEFOOD_VOC.length: " + TensorFlowYoloDetector.LABELS_SEEFOOD_VOC.length);
+        for (int i = 0; i < TensorFlowYoloDetector.LABELS_SEEFOOD_VOC.length; i++) {
+            if (checkedItems.containsKey(TensorFlowYoloDetector.LABELS_SEEFOOD_VOC[i])) {
+                checkedItemsList[i] = true;
+            }
+        }
+
         // Set the dialog title
         builder.setTitle("Add Ingredients")
                 // Specify the list array, the items to be selected by default (null for none),
                 // and the listener through which to receive callbacks when items are selected
-                .setMultiChoiceItems(TensorFlowYoloDetector.LABELS_SEEFOOD, null,
+                .setMultiChoiceItems(TensorFlowYoloDetector.LABELS_SEEFOOD_VOC, checkedItemsList,
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which,
@@ -204,14 +239,24 @@ public class ListActivity extends AppBaseActivity {
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // User clicked OK, so save the mSelectedItems results somewhere
-                        // or return them to the component that opened the dialog
+                        // User clicked OK, so save the mSelectedItems and update the listView
+                        for (int i : selectedItems) {
+                            if (checkedItemsList[i]) {
+                                checkedItemsList[i] = true;
+                                objects.add(TensorFlowYoloDetector.LABELS_SEEFOOD_VOC[i] + ",0,0");
+                                LOGGER.d("Item " + TensorFlowYoloDetector.LABELS_SEEFOOD_VOC[i] + " was selected!");
+                            }
+                        }
+                        if (selectedItems.size() > 0) {
+                            mAdapter.notifyDataSetChanged();
+                            mWelcomeTextView.setVisibility(View.GONE);
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-
+                        // Do nothing
                     }
                 });
 
@@ -220,7 +265,9 @@ public class ListActivity extends AppBaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (fab_menu.isExpanded())
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START))
+            super.onBackPressed();
+        else if (fab_menu.isExpanded())
             fab_menu.collapse();
         else
             super.onBackPressed();
@@ -273,10 +320,7 @@ public class ListActivity extends AppBaseActivity {
         for (String class_key : classCount.keySet()) {
             int count = classCount.get(class_key);
             objects.add(class_key + "," + count + "," + df.format(classConfidence.get(class_key) / count));
-            listOfIngridients.append(class_key).append(";");
         }
-
-
 
         // Code to populate ListView using above objects ArrayList
         mAdapter = new ObjectAdapter(this, objects);
@@ -295,6 +339,6 @@ public class ListActivity extends AppBaseActivity {
     }
 
     protected void completePendingTasksOnSignOut() {
-
+        super.completePendingTasksOnSignOut();
     }
 }

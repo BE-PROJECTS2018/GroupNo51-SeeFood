@@ -119,7 +119,7 @@ public class PreferencesActivity extends AppCompatActivity {
         }
         if (max_prep_time_changed) {
             String selection = sharedPrefs.getString(getString(R.string.max_prep_time_key), null);
-            updates.put("maxPrepTimeInSeconds", Integer.parseInt(selection));
+            updates.put("maxPrepTimeInSeconds", selection);
             LOGGER.d("maxPrepTimeInSeconds " + selection);
             max_prep_time_changed = false;
         }
@@ -158,7 +158,12 @@ public class PreferencesActivity extends AppCompatActivity {
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.preferences);
+            try {
+                addPreferencesFromResource(R.xml.preferences);
+            } catch (Exception e) {
+                LOGGER.d("addPreferencesFromResource() exception: " + e);
+                throw e;
+            }
         }
 
         @Override

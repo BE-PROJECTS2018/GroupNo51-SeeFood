@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +22,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
+import java.util.ArrayList;
+
 /**
  * Created by ubuntu on 7/3/18.
  */
@@ -32,6 +36,10 @@ public class MainActivity extends AppBaseActivity {
     // Access a Cloud Firestore instance from your Activity
     FirebaseFirestore firestoreDb = FirebaseFirestore.getInstance();
     DocumentReference docRef;
+    //Recyclerview of mainactivity
+    RecyclerView recyclerView;
+    MainRecyclerViewAdapter myAdapter;
+    ArrayList<String> list;
     private Logger LOGGER = new Logger();
     private TextView mWelcomeTextView;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -49,7 +57,7 @@ public class MainActivity extends AppBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mWelcomeTextView = findViewById(R.id.main_welcome_msg);
+        //mWelcomeTextView = findViewById(R.id.main_welcome_msg);
 
         // Facebook SDK's app activation helper
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -102,6 +110,24 @@ public class MainActivity extends AppBaseActivity {
 //                getCloudFirestoreInstance();
 //            }
 //        });
+
+        //RecyclerView of main activity
+
+        list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add("Card:" + (i + 1));
+        }
+
+        recyclerView = findViewById(R.id.main_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        myAdapter = new MainRecyclerViewAdapter(list, this);
+        recyclerView.setAdapter(myAdapter);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -212,7 +238,7 @@ public class MainActivity extends AppBaseActivity {
 //
 //        UserData userData = new UserData(userName, userEmail, userQuote);
 //
-//        // TODO: Donot create documents by username as they can be same
+//        // Donot create documents by username as they can be same
 //        docRef.set(userData)
 //                .addOnSuccessListener(new OnSuccessListener<Void>() {
 //                    @Override
@@ -229,6 +255,7 @@ public class MainActivity extends AppBaseActivity {
 //    }
     @Override
     protected void completePendingTasksOnSignOut() {
+        super.completePendingTasksOnSignOut();
     }
 
     @Override
@@ -240,7 +267,7 @@ public class MainActivity extends AppBaseActivity {
 //    private void setupSnapshotListener() {
 //        userName = mAuth.getCurrentUser().getDisplayName();
 //        userEmail = mAuth.getCurrentUser().getEmail();
-//        // TODO: Donot create documents by username as they can be same
+//        // Donot create documents by username as they can be same
 //        docRef = firestoreDb.collection("users").document(userName);
 //        docRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
 //            @Override

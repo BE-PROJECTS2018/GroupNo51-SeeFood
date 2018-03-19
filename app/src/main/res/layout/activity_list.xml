@@ -28,9 +28,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
-        fab:fab_addButtonColorNormal="@color/colorPrimary"
-        fab:fab_addButtonColorPressed="@color/colorPrimaryDark"
-        fab:fab_addButtonPlusIconColor="@color/colorAccent"
         fab:fab_labelStyle="@style/menu_labels_style"
         fab:fab_labelsPosition="left">
 
@@ -59,7 +56,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_icon="@android:drawable/ic_menu_directions"
+            fab:fab_icon="@android:drawable/ic_menu_search"
             fab:fab_size="normal"
             fab:fab_title="Fetch recipes" />
 
@@ -69,7 +66,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_icon="@android:drawable/ic_menu_search"
+            fab:fab_icon="@android:drawable/ic_menu_directions"
             fab:fab_size="normal"
             fab:fab_title="Sample call" />
 

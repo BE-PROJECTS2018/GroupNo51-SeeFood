@@ -25,7 +25,8 @@ import java.util.PriorityQueue;
 
 /** An object detector that uses TF and a YOLO model to detect objects. */
 public class TensorFlowYoloDetector implements Classifier {
-    public static final String[] LABELS_SEEFOOD = {
+
+    public static final String[] LABELS_SEEFOOD_VOC = {
             "banana",
             "cabbage",
             "cauliflower",
@@ -43,11 +44,25 @@ public class TensorFlowYoloDetector implements Classifier {
             "corn",
             "jackfruit"
     };
+    public static final String[] LABELS_SEEFOOD_COCO = {
+            "apple",
+            "banana",
+            "broccoli",
+            "cabbage",
+            "capsicum",
+            "cauliflower",
+            "corn",
+            "cucumber",
+            "jackfruit",
+            "pineapple",
+            "pomogranate",
+            "spinach",
+            "strawberry"
+    };
     private static final Logger LOGGER = new Logger();
     // Only return this many results with at least this confidence.
     private static final int MAX_RESULTS = 5;
     private static final int NUM_BOXES_PER_BLOCK = 5;
-
     // TODO(andrewharp): allow loading anchors and classes from files.
     private static final double[] ANCHORS = {
             1.08, 1.19,
@@ -57,126 +72,110 @@ public class TensorFlowYoloDetector implements Classifier {
             16.62, 10.52
     };
 
-    private static final String[] LABELS_VOC = {
-            "aeroplane",
-            "bicycle",
-            "bird",
-            "boat",
-            "bottle",
-            "bus",
-            "car",
-            "cat",
-            "chair",
-            "cow",
-            "diningtable",
-            "dog",
-            "horse",
-            "motorbike",
-            "person",
-            "pottedplant",
-            "sheep",
-            "sofa",
-            "train",
-            "tvmonitor"
-    };
+//    private static final String[] LABELS_VOC = {
+//            "aeroplane",
+//            "bicycle",
+//            "bird",
+//            "boat",
+//            "bottle",
+//            "bus",
+//            "car",
+//            "cat",
+//            "chair",
+//            "cow",
+//            "diningtable",
+//            "dog",
+//            "horse",
+//            "motorbike",
+//            "person",
+//            "pottedplant",
+//            "sheep",
+//            "sofa",
+//            "train",
+//            "tvmonitor"
+//    };
 
-    private static final String[] LABELS_COCO = {
-            "person",
-            "bicycle",
-            "car",
-            "motorbike",
-            "aeroplane",
-            "bus",
-            "train",
-            "truck",
-            "boat",
-            "traffic light",
-            "fire hydrant",
-            "stop sign",
-            "parking meter",
-            "bench",
-            "bird",
-            "cat",
-            "dog",
-            "horse",
-            "sheep",
-            "cow",
-            "elephant",
-            "bear",
-            "zebra",
-            "giraffe",
-            "backpack",
-            "umbrella",
-            "handbag",
-            "tie",
-            "suitcase",
-            "frisbee",
-            "skis",
-            "snowboard",
-            "sports ball",
-            "kite",
-            "baseball bat",
-            "baseball glove",
-            "skateboard",
-            "surfboard",
-            "tennis racket",
-            "bottle",
-            "wine glass",
-            "cup",
-            "fork",
-            "knife",
-            "spoon",
-            "bowl",
-            "banana",
-            "apple",
-            "sandwich",
-            "orange",
-            "broccoli",
-            "carrot",
-            "hot dog",
-            "pizza",
-            "donut",
-            "cake",
-            "chair",
-            "sofa",
-            "pottedplant",
-            "bed",
-            "diningtable",
-            "toilet",
-            "tvmonitor",
-            "laptop",
-            "mouse",
-            "remote",
-            "keyboard",
-            "cell phone",
-            "microwave",
-            "oven",
-            "toaster",
-            "sink",
-            "refrigerator",
-            "book",
-            "clock",
-            "vase",
-            "scissors",
-            "teddy bear",
-            "hair drier",
-            "toothbrush"
-    };
-
-//    public static final String[] LABELS_SEEFOOD = {
-//            "apple",
+    //    private static final String[] LABELS_COCO = {
+//            "person",
+//            "bicycle",
+//            "car",
+//            "motorbike",
+//            "aeroplane",
+//            "bus",
+//            "train",
+//            "truck",
+//            "boat",
+//            "traffic light",
+//            "fire hydrant",
+//            "stop sign",
+//            "parking meter",
+//            "bench",
+//            "bird",
+//            "cat",
+//            "dog",
+//            "horse",
+//            "sheep",
+//            "cow",
+//            "elephant",
+//            "bear",
+//            "zebra",
+//            "giraffe",
+//            "backpack",
+//            "umbrella",
+//            "handbag",
+//            "tie",
+//            "suitcase",
+//            "frisbee",
+//            "skis",
+//            "snowboard",
+//            "sports ball",
+//            "kite",
+//            "baseball bat",
+//            "baseball glove",
+//            "skateboard",
+//            "surfboard",
+//            "tennis racket",
+//            "bottle",
+//            "wine glass",
+//            "cup",
+//            "fork",
+//            "knife",
+//            "spoon",
+//            "bowl",
 //            "banana",
+//            "apple",
+//            "sandwich",
+//            "orange",
 //            "broccoli",
-//            "cabbage",
-//            "capsicum",
-//            "cauliflower",
-//            "corn",
-//            "cucumber",
-//            "jackfruit",
-//            "pineapple",
-//            "pomogranate",
-//            "spinach",
-//            "strawberry"
+//            "carrot",
+//            "hot dog",
+//            "pizza",
+//            "donut",
+//            "cake",
+//            "chair",
+//            "sofa",
+//            "pottedplant",
+//            "bed",
+//            "diningtable",
+//            "toilet",
+//            "tvmonitor",
+//            "laptop",
+//            "mouse",
+//            "remote",
+//            "keyboard",
+//            "cell phone",
+//            "microwave",
+//            "oven",
+//            "toaster",
+//            "sink",
+//            "refrigerator",
+//            "book",
+//            "clock",
+//            "vase",
+//            "scissors",
+//            "teddy bear",
+//            "hair drier",
+//            "toothbrush"
 //    };
 private static int NUM_CLASSES;
     private static String[] LABELS;
@@ -217,10 +216,10 @@ private static int NUM_CLASSES;
         String yolo_model_filename = sharedPrefs.getString(context.getResources().getString(R.string.settings_detector_key),
                 context.getResources().getString(R.string.settings_detector_default));
         if(yolo_model_filename.equals(context.getResources().getString(R.string.settings_detector_ms_coco_value))){
-            LABELS = LABELS_COCO;
-            NUM_CLASSES=80;
+            LABELS = LABELS_SEEFOOD_COCO;
+            NUM_CLASSES = 13;
         }else {
-            LABELS = LABELS_SEEFOOD;
+            LABELS = LABELS_SEEFOOD_VOC;
             NUM_CLASSES=16;
         }
 

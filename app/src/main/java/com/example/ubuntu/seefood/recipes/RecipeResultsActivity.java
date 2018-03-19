@@ -75,7 +75,6 @@ public class RecipeResultsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-
     }
 
 }
