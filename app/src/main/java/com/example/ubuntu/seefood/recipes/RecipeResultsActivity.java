@@ -47,7 +47,7 @@ public class RecipeResultsActivity extends AppCompatActivity {
         Bundle bundle = intent.getBundleExtra("bundle");
         String parameter = bundle.getString("param");
 
-        Toast.makeText(getApplicationContext(), "" + parameter, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "" + parameter, Toast.LENGTH_SHORT).show();
 
         Call<SearchResult> call = apiInterface.getSearchResults();
 

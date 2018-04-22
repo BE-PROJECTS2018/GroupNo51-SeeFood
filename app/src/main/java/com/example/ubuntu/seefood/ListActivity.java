@@ -209,10 +209,10 @@ public class ListActivity extends AppBaseActivity {
             LOGGER.d("Added ingredient " + classKey[0]);
             checkedItems.put(classKey[0], true);
         }
-        final boolean checkedItemsList[] = new boolean[TensorFlowYoloDetector.LABELS_SEEFOOD_VOC.length];
-        LOGGER.d("TensorFlowYoloDetector.LABELS_SEEFOOD_VOC.length: " + TensorFlowYoloDetector.LABELS_SEEFOOD_VOC.length);
-        for (int i = 0; i < TensorFlowYoloDetector.LABELS_SEEFOOD_VOC.length; i++) {
-            if (checkedItems.containsKey(TensorFlowYoloDetector.LABELS_SEEFOOD_VOC[i])) {
+        final boolean checkedItemsList[] = new boolean[TensorFlowYoloDetector.LABELS.length];
+        LOGGER.d("TensorFlowYoloDetector.LABELS.length: " + TensorFlowYoloDetector.LABELS.length);
+        for (int i = 0; i < TensorFlowYoloDetector.LABELS.length; i++) {
+            if (checkedItems.containsKey(TensorFlowYoloDetector.LABELS[i])) {
                 checkedItemsList[i] = true;
             }
         }
@@ -221,7 +221,7 @@ public class ListActivity extends AppBaseActivity {
         builder.setTitle("Add Ingredients")
                 // Specify the list array, the items to be selected by default (null for none),
                 // and the listener through which to receive callbacks when items are selected
-                .setMultiChoiceItems(TensorFlowYoloDetector.LABELS_SEEFOOD_VOC, checkedItemsList,
+                .setMultiChoiceItems(TensorFlowYoloDetector.LABELS, checkedItemsList,
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which,
@@ -243,8 +243,8 @@ public class ListActivity extends AppBaseActivity {
                         for (int i : selectedItems) {
                             if (checkedItemsList[i]) {
                                 checkedItemsList[i] = true;
-                                objects.add(TensorFlowYoloDetector.LABELS_SEEFOOD_VOC[i] + ",0,0");
-                                LOGGER.d("Item " + TensorFlowYoloDetector.LABELS_SEEFOOD_VOC[i] + " was selected!");
+                                objects.add(TensorFlowYoloDetector.LABELS[i] + ",0,0");
+                                LOGGER.d("Item " + TensorFlowYoloDetector.LABELS[i] + " was selected!");
                             }
                         }
                         if (selectedItems.size() > 0) {

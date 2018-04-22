@@ -26,7 +26,22 @@ import java.util.PriorityQueue;
 /** An object detector that uses TF and a YOLO model to detect objects. */
 public class TensorFlowYoloDetector implements Classifier {
 
-    public static final String[] LABELS_SEEFOOD_VOC = {
+    public static final String[] LABELS = {
+            "apple",
+            "banana",
+            "broccoli",
+            "cabbage",
+            "capsicum",
+            "cauliflower",
+            "corn",
+            "cucumber",
+            "jackfruit",
+            "pineapple",
+            "pomogranate",
+            "spinach",
+            "strawberry"
+    };
+    private static final String[] LABELS_SEEFOOD_VOC = {
             "banana",
             "cabbage",
             "cauliflower",
@@ -43,21 +58,6 @@ public class TensorFlowYoloDetector implements Classifier {
             "spinach",
             "corn",
             "jackfruit"
-    };
-    public static final String[] LABELS_SEEFOOD_COCO = {
-            "apple",
-            "banana",
-            "broccoli",
-            "cabbage",
-            "capsicum",
-            "cauliflower",
-            "corn",
-            "cucumber",
-            "jackfruit",
-            "pineapple",
-            "pomogranate",
-            "spinach",
-            "strawberry"
     };
     private static final Logger LOGGER = new Logger();
     // Only return this many results with at least this confidence.
@@ -177,8 +177,8 @@ public class TensorFlowYoloDetector implements Classifier {
 //            "hair drier",
 //            "toothbrush"
 //    };
-private static int NUM_CLASSES;
-    private static String[] LABELS;
+    private static int NUM_CLASSES;
+//    public static String[] LABELS;
 
     // Config values.
     private String inputName;
@@ -215,13 +215,14 @@ private static int NUM_CLASSES;
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         String yolo_model_filename = sharedPrefs.getString(context.getResources().getString(R.string.settings_detector_key),
                 context.getResources().getString(R.string.settings_detector_default));
-        if(yolo_model_filename.equals(context.getResources().getString(R.string.settings_detector_ms_coco_value))){
-            LABELS = LABELS_SEEFOOD_COCO;
-            NUM_CLASSES = 13;
-        }else {
-            LABELS = LABELS_SEEFOOD_VOC;
-            NUM_CLASSES=16;
-        }
+        NUM_CLASSES = 13;
+//        if(yolo_model_filename.equals(context.getResources().getString(R.string.settings_detector_ms_coco_value))){
+//            LABELS = LABELS_SEEFOOD_COCO;
+//            NUM_CLASSES = 13;
+//        }else {
+//            LABELS = LABELS_SEEFOOD_VOC;
+//            NUM_CLASSES=16;
+//        }
 
         // Pre-allocate buffers.
         d.outputNames = outputName.split(",");

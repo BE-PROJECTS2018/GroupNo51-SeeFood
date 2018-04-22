@@ -24,7 +24,7 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, TensorFlowYoloDetector.LABELS_SEEFOOD_VOC);
+        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, TensorFlowYoloDetector.LABELS);
         ListView listView = findViewById(R.id.list);
         listView.setAdapter(mAdapter);
 
