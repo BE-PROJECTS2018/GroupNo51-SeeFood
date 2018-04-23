@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Preferences">
+    <MultiSelectListPreference
+        android:defaultValue="@array/empty_array"
+        android:dialogTitle="Allergies"
+        android:entries="@array/allergy_values"
+        android:entryValues="@array/allergy_values"
+        android:key="@string/allergies_preference_key"
+        android:summary="Allergic items to be excluded from recipes"
+        android:title="Allergies" />
+    <MultiSelectListPreference
+        android:defaultValue="@array/empty_array"
+        android:dialogTitle="Courses"
+        android:entries="@array/courses_values"
+        android:entryValues="@array/courses_values"
+        android:key="@string/courses_preferences_key"
+        android:summary="Course of the recipes to be included"
+        android:title="Courses" />
+    <MultiSelectListPreference
+        android:defaultValue="@array/empty_array"
+        android:dialogTitle="Cuisines"
+        android:entries="@array/cuisines_values"
+        android:entryValues="@array/cuisines_values"
+        android:key="@string/cuisines_preferences_key"
+        android:summary="Preferred cuisine of recipes to be included"
+        android:title="Cuisines" />
+    <MultiSelectListPreference
+        android:defaultValue="@array/empty_array"
+        android:dialogTitle="Diet"
+        android:entries="@array/diet_labels"
+        android:entryValues="@array/diet_values"
+        android:key="@string/diet_preferences_key"
+        android:summary="Diet of recipes to be displayed"
+        android:title="Diet" />
+    <MultiSelectListPreference
+        android:defaultValue="@array/empty_array"
+        android:dialogTitle="Flavor"
+        android:entries="@array/flavor_values"
+        android:entryValues="@array/flavor_values"
+        android:key="@string/flavor_preferences_key"
+        android:summary="Taste attributes of recipes to be displayed"
+        android:title="Flavor" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/max_prep_time_labels"
+        android:entryValues="@array/max_prep_time_values"
+        android:key="@string/max_prep_time_key"
+        android:summary="Total preparation time for recipe"
+        android:title="Max preparation time" />
+
+</PreferenceScreen>

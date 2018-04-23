@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/activity_detector_settings">
+
+    <ListPreference
+        android:defaultValue="@string/settings_detector_default"
+        android:entries="@array/settings_detector_labels"
+        android:entryValues="@array/settings_detector_values"
+        android:key="@string/settings_detector_key"
+        android:title="@string/settings_detector_label" />
+
+    <EditTextPreference
+        android:defaultValue="@string/settings_detector_threshold_default"
+        android:inputType="numberDecimal"
+        android:key="@string/settings_detector_threshold_key"
+        android:selectAllOnFocus="true"
+        android:title="@string/settings_detector_threshold_label" />
+
+
+</PreferenceScreen>

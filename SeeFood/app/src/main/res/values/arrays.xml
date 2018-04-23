@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="settings_detector_labels">
+        <item>@string/settings_detector_ms_coco_label</item>
+        <item>@string/settings_detector_seefood_label</item>
+    </string-array>
+
+    <string-array name="settings_detector_values">
+        <item>@string/settings_detector_ms_coco_value</item>
+        <item>@string/settings_detector_seefood_value</item>
+    </string-array>
+
+    <!-- Max Preparation time -->
+    <string-array name="max_prep_time_labels">
+        <item>Any</item>
+        <item>Less than 15 mins</item>
+        <item>Less than 30 mins</item>
+        <item>Less than 45 mins</item>
+        <item>Less than 1 hr</item>
+        <item>Less than 1.5 hrs</item>
+        <item>Less than 2 hrs</item>
+        <item>Less than 3 hrs</item>
+    </string-array>
+
+    <!-- Max Preparation time -->
+    <string-array name="max_prep_time_values">
+        <item>0</item>
+        <item>900</item>
+        <item>1800</item>
+        <item>2700</item>
+        <item>3600</item>
+        <item>5400</item>
+        <item>7200</item>
+        <item>10800</item>
+    </string-array>
+
+    <!-- Allergies MultiListPreference -->
+    <string-array name="allergy_values">
+        <item>Dairy</item>
+        <item>Egg</item>
+        <item>Gluten</item>
+        <item>Peanut</item>
+        <item>Seafood</item>
+        <item>Sesame</item>
+        <item>Soy</item>
+        <item>Sulfite</item>
+        <item>Tree nut</item>
+        <item>Wheat</item>
+    </string-array>
+
+    <!-- Courses MultiListPreference -->
+    <string-array name="courses_values">
+        <item>Appetizers</item>
+        <item>Beverages</item>
+        <item>Breads</item>
+        <item>Breakfast and Brunch</item>
+        <item>Cocktails</item>
+        <item>Condiments and Sauces</item>
+        <item>Deserts</item>
+        <item>Lunch and Snacks</item>
+        <item>Salads</item>
+        <item>Side Dishes</item>
+        <item>Soups</item>
+        <item>Main dish</item>
+    </string-array>
+
+    <!-- Cuisines MultiListPreference -->
+    <string-array name="cuisines_values">
+        <item>American</item>
+        <item>Asian</item>
+        <item>Barbecue</item>
+        <item>Cajun &amp; Creole</item>
+        <item>Chinese</item>
+        <item>Cuban</item>
+        <item>English</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Greek</item>
+        <item>Hawaiin</item>
+        <item>Hungarian</item>
+        <item>Indian</item>
+        <item>Irish</item>
+        <item>Italian</item>
+        <item>Japanese</item>
+        <item>Mediterranean</item>
+        <item>Mexican</item>
+        <item>Moroccan</item>
+        <item>Portugese</item>
+        <item>Southern &amp; Soul Food</item>
+        <item>Southwestern</item>
+        <item>Spanish</item>
+        <item>Swedish</item>
+        <item>Thai</item>
+    </string-array>
+
+    <!-- Diet MultiListPreference -->
+    <string-array name="diet_labels">
+        <item>No eggs</item>
+        <item>No dairy</item>
+        <item>No meat but fish</item>
+        <item>No animal products</item>
+        <item>Vegetarian</item>
+    </string-array>
+    <string-array name="diet_values">
+        <item>Lacto vegetarian</item>
+        <item>Ovo vegetarian</item>
+        <item>Pescetarian</item>
+        <item>Vegan</item>
+        <item>Vegetarian</item>
+    </string-array>
+
+    <!-- Flavor MultiListPreferences -->
+    <string-array name="flavor_values">
+        <item>Sweet</item>
+        <item>Meaty</item>
+        <item>Sour</item>
+        <item>Bitter</item>
+        <item>Salty</item>
+        <item>Piquant</item>
+    </string-array>
+
+    <string-array name="empty_array" />
+
+</resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#795548</color>
+    <color name="colorPrimaryDark">#5D4037</color>
+    <color name="colorAccent">#FF4081</color>
+
+
+    <!-- Color for an object with confidence 0 and 2 -->
+    <color name="confidence1">#4A7BA7</color>
+
+    <!-- confidence circle color for an object with confidence between 2 and 3 -->
+    <color name="confidence2">#04B4B3</color>
+
+    <!-- confidence circle color for an object with confidence between 3 and 4 -->
+    <color name="confidence3">#10CAC9</color>
+
+    <!-- confidence circle color for an object with confidence between 4 and 5 -->
+    <color name="confidence4">#F5A623</color>
+
+    <!-- confidence circle color for an object with confidence between 5 and 6 -->
+    <color name="confidence5">#FF7D50</color>
+
+    <!-- confidence circle color for an object with confidence between 6 and 7 -->
+    <color name="confidence6">#FC6644</color>
+
+    <!-- confidence circle color for an object with confidence between 7 and 8 -->
+    <color name="confidence7">#E75F40</color>
+
+    <!-- confidence circle color for an object with confidence between 8 and 9 -->
+    <color name="confidence8">#E13A20</color>
+
+    <!-- confidence circle color for an object with confidence between 9 and 10 -->
+    <color name="confidence9">#D93218</color>
+
+    <!-- confidence circle color for an object with confidence over 10 -->
+    <color name="confidence10plus">#C03823</color>
+
+    <!-- Text color for the details of the object in the list item -->
+    <color name="textColorObjectDetails">#B4BAC0</color>
+
+    <!-- Text color for the primary location of the object in the list item -->
+    <color name="textColorObjectLocation">#2B3D4D</color>
+
+    <!-- Floating action button colors -->
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="background">#e5e5e5</color>
+    <color name="half_black">#808080</color>
+    <color name="white">#fafafa</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="pink">#e91e63</color>
+    <color name="pink_pressed">#ec407a</color>
+    <color name="blue_semi_transparent">#805677fc</color>
+    <color name="blue_semi_transparent_pressed">#80738ffe</color>
+</resources>

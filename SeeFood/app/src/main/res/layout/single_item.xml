@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="8dp"
+    android:layout_marginEnd="14dp"
+    android:layout_marginStart="14dp"
+    android:layout_marginTop="8dp"
+    app:cardElevation="8dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/header_constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_menu">
+
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:weightSum="5">
+
+            <TextView
+                android:id="@+id/recipeName"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3.5"
+                android:gravity="center_horizontal|center_vertical"
+                android:padding="12dp"
+                android:text="Recipe Name"
+                android:textColor="@color/cardview_light_background"
+                android:textSize="38sp" />
+
+            <com.like.LikeButton
+                android:id="@+id/starButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.75"
+                android:padding="12dp"
+                app:icon_size="25dp"
+                app:icon_type="Star" />
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.75"
+                android:background="@android:color/transparent"
+                android:padding="12dp"
+                android:src="@android:drawable/ic_menu_share" />
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/header_constraint_layout"
+            app:layout_constraintTop_toBottomOf="@id/header">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/sub_constraint_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/prep_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:paddingTop="12dp"
+                    android:text="PREP AND COOK TIME"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="36sp" />
+
+                <TextView
+                    android:id="@+id/prep_time"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:padding="12dp"
+                    android:text="405 minutes"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="32sp"
+                    app:layout_constraintLeft_toLeftOf="@id/sub_constraint_layout"
+                    app:layout_constraintRight_toRightOf="@id/sub_constraint_layout"
+                    app:layout_constraintTop_toBottomOf="@id/prep_title" />
+
+
+                <LinearLayout
+                    android:id="@+id/ingridients"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/prep_time">
+
+                    <TextView
+                        android:id="@+id/ingridients_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="INGREDIENTS"
+                        android:textColor="@color/cardview_light_background"
+                        android:textSize="36sp" />
+
+                    <TextView
+                        android:id="@+id/ingridentsList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:padding="12dp"
+                        android:text="Ingridients list"
+                        android:textColor="@color/cardview_light_background"
+                        android:textSize="32sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/taste"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:weightSum="2"
+                    app:layout_constraintTop_toBottomOf="@id/ingridients"
+                    app:layout_constraintVertical_weight="15">
+
+                    <TextView
+                        android:id="@+id/taste_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="TASTE"
+                        android:textColor="@color/cardview_light_background"
+                        android:textSize="36sp" />
+
+                    <LinearLayout
+                        android:id="@+id/taste_seekbars"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="5">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2.485"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="8dp"
+                                android:weightSum="3">
+
+                                <com.example.ubuntu.seefood.recipes.MyTextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.9"
+                                    android:text="Salty"
+                                    android:textColor="@color/cardview_light_background"
+                                    android:textSize="24sp" />
+
+                                <SeekBar
+                                    android:id="@+id/saltySeekBar"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2.25"
+                                    android:enabled="false"
+                                    android:max="100"
+                                    android:progressBackgroundTint="@color/cardview_light_background"
+                                    android:progressTint="@color/cardview_light_background"
+                                    android:thumbTint="@color/cardview_light_background" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="8dp"
+                                android:weightSum="3">
+
+                                <com.example.ubuntu.seefood.recipes.MyTextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.9"
+                                    android:text="Sour"
+                                    android:textColor="@color/cardview_light_background"
+                                    android:textSize="24sp" />
+
+                                <SeekBar
+                                    android:id="@+id/sourSeekBar"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2.25"
+                                    android:enabled="false"
+                                    android:max="100"
+                                    android:progressBackgroundTint="@color/cardview_light_background"
+                                    android:progressTint="@color/cardview_light_background"
+                                    android:thumbTint="@color/cardview_light_background" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="8dp"
+                                android:weightSum="3">
+
+                                <com.example.ubuntu.seefood.recipes.MyTextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.9"
+                                    android:text="Sweet"
+                                    android:textColor="@color/cardview_light_background"
+                                    android:textSize="24sp" />
+
+                                <SeekBar
+                                    android:id="@+id/sweetSeekBar"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2.25"
+                                    android:enabled="false"
+                                    android:max="100"
+                                    android:progressBackgroundTint="@color/cardview_light_background"
+                                    android:progressTint="@color/cardview_light_background"
+                                    android:thumbTint="@color/cardview_light_background" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.03"
+                            android:background="@android:color/darker_gray"
+                            android:visibility="invisible" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2.485"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="8dp"
+                                android:weightSum="3">
+
+                                <com.example.ubuntu.seefood.recipes.MyTextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Bitter"
+                                    android:textColor="@color/cardview_light_background"
+                                    android:textSize="24sp" />
+
+                                <SeekBar
+                                    android:id="@+id/bitterSeekBar"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2.1"
+                                    android:enabled="false"
+                                    android:max="100"
+                                    android:progressBackgroundTint="@color/cardview_light_background"
+                                    android:progressTint="@color/cardview_light_background"
+                                    android:thumbTint="@color/cardview_light_background" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="8dp"
+                                android:weightSum="3">
+
+                                <com.example.ubuntu.seefood.recipes.MyTextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Meaty"
+                                    android:textColor="@color/cardview_light_background"
+                                    android:textSize="24sp" />
+                                <SeekBar
+                                    android:id="@+id/meatySeekBar"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2.1"
+                                    android:enabled="false"
+                                    android:max="100"
+                                    android:progressBackgroundTint="@color/cardview_light_background"
+                                    android:progressTint="@color/cardview_light_background"
+                                    android:thumbTint="@color/cardview_light_background" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="8dp"
+                                android:weightSum="3">
+
+                                <com.example.ubuntu.seefood.recipes.MyTextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Piquant"
+                                    android:textColor="@color/cardview_light_background"
+                                    android:textSize="24sp" />
+
+                                <SeekBar
+                                    android:id="@+id/piquantSeekBar"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2.1"
+                                    android:enabled="false"
+                                    android:max="100"
+                                    android:progressBackgroundTint="@color/cardview_light_background"
+                                    android:progressTint="@color/cardview_light_background"
+                                    android:thumbTint="@color/cardview_light_background" />
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/rating_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="Rating"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="36sp"
+                    app:layout_constraintTop_toBottomOf="@id/taste" />
+
+
+                <RatingBar
+                    android:id="@+id/rating_bar"
+                    style="@android:style/Widget.DeviceDefault.Light.RatingBar.Indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:progressBackgroundTint="@color/cardview_light_background"
+                    android:progressTint="@color/cardview_light_background"
+                    android:stepSize="0.1"
+                    app:layout_constraintLeft_toLeftOf="@id/sub_constraint_layout"
+                    app:layout_constraintRight_toRightOf="@id/sub_constraint_layout"
+                    app:layout_constraintTop_toBottomOf="@id/rating_title" />
+
+
+                <TextView
+                    android:id="@+id/tags_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="Tags"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="36sp"
+                    app:layout_constraintTop_toBottomOf="@id/rating_bar" />
+
+                <TextView
+                    android:id="@+id/tagsList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:padding="12dp"
+                    android:text="Tags list"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="32sp"
+                    app:layout_constraintTop_toBottomOf="@id/tags_title" />
+
+
+                <TextView
+                    android:id="@+id/link"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoLink="web"
+                    android:gravity="center"
+                    android:linksClickable="true"
+                    android:text="Link"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="24sp"
+                    app:layout_constraintTop_toBottomOf="@id/tagsList" />
+
+
+            </android.support.constraint.ConstraintLayout>
+
+        </ScrollView>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

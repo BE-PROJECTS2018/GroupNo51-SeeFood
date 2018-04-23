@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+    <header
+        android:fragment="com.example.ubuntu.seefood.menu.PreferencesActivity$AllergiesFragment"
+        android:summary="Select allergic items to be excluded in recipes"
+        android:title="Allergies" />
+    <header
+        android:fragment="com.example.ubuntu.seefood.menu.PreferencesActivity$CoursesFragment"
+        android:summary="Select course of the recipes"
+        android:title="Courses"></header>
+    <header
+        android:fragment="com.example.ubuntu.seefood.menu.PreferencesActivity$CuisinesFragment"
+        android:summary="Select preferred cuisine for recipes"
+        android:title="Cuisines"></header>
+    <header
+        android:fragment="com.example.ubuntu.seefood.menu.PreferencesActivity$DietFragment"
+        android:summary="Select appropriate diet for recipes"
+        android:title="Diet"></header>
+</preference-headers>
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><!-- START xml_defaults -->
+<defaultsMap>
+    <entry>
+        <key>loading_phrase</key>
+        <value>Fetching config…</value>
+    </entry>
+    <entry>
+        <key>welcome_message_dev</key>
+        <value>Congrats on being a SeeFood tester!</value>
+    </entry>
+    <entry>
+        <key>welcome_message</key>
+        <value>Start detection by clicking the camera icon!</value>
+    </entry>
+</defaultsMap><!-- END xml_defaults -->
