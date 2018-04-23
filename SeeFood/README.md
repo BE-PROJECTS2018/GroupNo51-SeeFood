@@ -1,2 +1,2 @@
 # SeeFood
-Something cool is on its way...
+Open this folder in Android Studio. It should automatically build the project.
