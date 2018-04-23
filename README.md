@@ -12,7 +12,7 @@ Open the folder 'folder_name/SeeFood' in Android Studio and then build project.
 
 #### 2) Training Scripts
 
-Open the yolo_coco_training_darkflow.ipynb in google collaboratory and follow the mentioned steps for training on your dataset.
+Open `yolo_coco_training_darkflow.ipynb` in google collaboratory and follow the mentioned steps for training on your dataset.
 
 #### 3) Dataset
 
