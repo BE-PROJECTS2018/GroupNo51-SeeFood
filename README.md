@@ -16,8 +16,8 @@ Open the yolo_coco_training_darkflow.ipynb in google collaboratory and follow th
 
 #### 3) Dataset
 
-- [Google open images dataset](https://github.com/openimages/dataset)
 Follow the instructions to get the links to images and their annotations
+- [Google open images dataset](https://github.com/openimages/dataset)
 
 Images from imagenet
 - [Imagenet](http://www.image-net.org/)
