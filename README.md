@@ -23,3 +23,10 @@ Images from imagenet
 Annotations for imagenet image classes
 - [Imagenet bounding boxes](http://image-net.org/api/text/imagenet.bbox.obtain_synset_wordlist)
 
+#### 4) Project report
+
+Refer Final_report.pdf for full details of the project
+
+## Screenshots
+
+
