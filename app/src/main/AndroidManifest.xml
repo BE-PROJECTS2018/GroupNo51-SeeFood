@@ -86,6 +86,7 @@
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainRecyclerItemClickActivity"></activity>
     </application>
 
 </manifest>

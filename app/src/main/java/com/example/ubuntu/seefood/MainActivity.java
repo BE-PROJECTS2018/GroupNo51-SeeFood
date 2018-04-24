@@ -1,6 +1,7 @@
 package com.example.ubuntu.seefood;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
@@ -10,10 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ubuntu.seefood.detector.DetectorActivity;
 import com.example.ubuntu.seefood.env.Logger;
 import com.example.ubuntu.seefood.recipes.RecipesActivity;
+import com.example.ubuntu.seefood.recipes.StarredRecipe;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -21,8 +24,12 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ubuntu on 7/3/18.
@@ -113,21 +120,46 @@ public class MainActivity extends AppBaseActivity {
 
         //RecyclerView of main activity
 
-        list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.add("Card:" + (i + 1));
-        }
 
-        recyclerView = findViewById(R.id.main_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        myAdapter = new MainRecyclerViewAdapter(list, this);
-        recyclerView.setAdapter(myAdapter);
-
+//        ArrayList<StarredRecipe> list = new ArrayList<>();
+//        SharedPreferences preferences = getSharedPreferences("Starred", MODE_PRIVATE);
+//        for(Map.Entry entry:preferences.getAll().entrySet()){
+//            Gson gson = new Gson();
+//            String json = entry.getValue().toString();
+//            StarredRecipe temp = gson.fromJson(json, StarredRecipe.class);
+//            list.add(temp);
+//        }
+//
+//        recyclerView = findViewById(R.id.main_recycler_view);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        myAdapter = new MainRecyclerViewAdapter(list, this);
+//        recyclerView.setAdapter(myAdapter);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        ArrayList<StarredRecipe> list = new ArrayList<>();
+        SharedPreferences preferences = getSharedPreferences("Starred", MODE_PRIVATE);
+        for(Map.Entry entry:preferences.getAll().entrySet()){
+            Gson gson = new Gson();
+            String json = entry.getValue().toString();
+            StarredRecipe temp = gson.fromJson(json, StarredRecipe.class);
+            list.add(temp);
+        }
+        recyclerView = findViewById(R.id.main_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        TextView textView = (TextView)findViewById(R.id.starMsg);
+        if(list.isEmpty()){
+            recyclerView.setVisibility(View.INVISIBLE);
+            textView.setVisibility(View.VISIBLE);
+            recyclerView.invalidate();
+        }else {
+            textView.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            myAdapter = new MainRecyclerViewAdapter(list, this);
+            recyclerView.setAdapter(myAdapter);
+        }
     }
 
     @Override

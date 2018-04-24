@@ -1,6 +1,7 @@
 package com.example.ubuntu.seefood.recipes;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -13,10 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ubuntu.seefood.R;
 import com.example.ubuntu.seefood.yummly_pojo.Attributes;
 import com.example.ubuntu.seefood.yummly_pojo.Match;
+import com.google.gson.Gson;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.List;
 
@@ -28,10 +33,12 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
     Context context;
     private List<Match> matchList;
+    SharedPreferences preferences;
 
     public MyRecyclerAdapter(List<Match> matchList, Context context) {
         this.matchList = matchList;
         this.context = context;
+        preferences = context.getSharedPreferences("Starred", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -51,6 +58,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
         Typeface ingridientsTitleFont = Typeface.createFromAsset(context.getAssets(), "fonts/pigment.otf");
         holder.ingridientTitle.setTypeface(ingridientsTitleFont);
+
 
         if (matchList.get(position).getIngredients() == null) {
             holder.ingridientTitle.setVisibility(View.GONE);
@@ -150,7 +158,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         holder.link.setTypeface(ingridientList);
         holder.link.setClickable(true);
         holder.link.setMovementMethod(LinkMovementMethod.getInstance());
-        holder.link.setText(Html.fromHtml("https://www.yummly.com/#recipe/" + matchList.get(position).getId()));
+        String link = "https://www.yummly.com/#recipe/" + matchList.get(position).getId();
+        holder.link.setText(Html.fromHtml(link));
 
         if (matchList.get(position).getAttributes() == null) {
             holder.tagsTitle.setVisibility(View.GONE);
@@ -186,6 +195,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             holder.tagsList.setTypeface(ingridientList);
             holder.tagsList.setText(tagsList.toString());
         }
+
+
+        if(preferences.contains(matchList.get(position).getRecipeName())){
+            holder.star.setLiked(true);
+        }
     }
 
     @Override
@@ -193,7 +207,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         return matchList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements OnLikeListener {
 
         TextView recipeName;
         TextView ingridientTitle;
@@ -213,6 +227,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         TextView tagsList;
         TextView prepTitle;
         LinearLayout tasteSeekBars;
+        LikeButton star;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -234,6 +249,40 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             tagsList = itemView.findViewById(R.id.tagsList);
             prepTitle = itemView.findViewById(R.id.prep_title);
             tasteSeekBars = itemView.findViewById(R.id.taste_seekbars);
+            star = itemView.findViewById(R.id.starButton);
+            star.setOnLikeListener(this);
+        }
+
+        @Override
+        public void liked(LikeButton likeButton) {
+            likeButton.setLiked(true);
+            StarredRecipe recipe = new StarredRecipe();
+            recipe.recipename = matchList.get(getAdapterPosition()).getRecipeName();
+            recipe.totaltime = matchList.get(getAdapterPosition()).getTotalTimeInSeconds();
+            recipe.ingredients = matchList.get(getAdapterPosition()).getIngredients();
+            recipe.rating = matchList.get(getAdapterPosition()).getRating();
+            recipe.tags = matchList.get(getAdapterPosition()).getAttributes();
+            recipe.flavors = matchList.get(getAdapterPosition()).getFlavors();
+            recipe.link = "https://www.yummly.com/#recipe/" + matchList.get(getAdapterPosition()).getId();
+
+            SharedPreferences.Editor prefEditor = preferences.edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(recipe);
+            prefEditor.putString(recipe.recipename, json);
+            prefEditor.commit();
+
+            Toast.makeText(context, "Starred:" + matchList.get(getAdapterPosition()).getRecipeName(), Toast.LENGTH_SHORT).show();
+
+
+        }
+
+        @Override
+        public void unLiked(LikeButton likeButton) {
+            likeButton.setLiked(false);
+            SharedPreferences.Editor prefEditor = preferences.edit();
+            prefEditor.remove(matchList.get(getAdapterPosition()).getRecipeName());
+            prefEditor.commit();
+            Toast.makeText(context, "Deleted:" + matchList.get(getAdapterPosition()).getRecipeName(), Toast.LENGTH_SHORT).show();
         }
     }
 }

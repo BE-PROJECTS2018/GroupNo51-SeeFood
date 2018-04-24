@@ -10,6 +10,18 @@
         android:layout_height="match_parent"
         android:layout_margin="16dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Starred Items Appear Here"
+        android:textSize="32sp"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        android:id="@+id/starMsg"
+        android:textColor="#FFFFFF"
+        />
+
+
     <!-- Testing firestore -->
     <!--<LinearLayout-->
     <!--android:layout_width="match_parent"-->
