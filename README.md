@@ -4,11 +4,9 @@ Using smartphone camera to detect multiple fruits and vegetables and suggest rec
 ## Instructions
 #### 1) Downloading the project
 
-Clone the SeeFood Repository :
+Clone the this Repository :
 
-`git clone https://github.com/himanshurawlani/SeeFood folder_name`
-
-Open the folder 'folder_name/SeeFood' in Android Studio and then build project.
+Open the cloned folder in Android Studio and then build project.
 
 #### 2) Training Scripts
 
