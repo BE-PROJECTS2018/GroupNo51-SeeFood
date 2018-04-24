@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_sign_in"
+            android:icon="@android:drawable/ic_partial_secure"
+            android:title="@string/action_sign_in" />
+        <item
+            android:id="@+id/action_sign_out"
+            android:icon="@android:drawable/ic_secure"
+            android:title="@string/action_sign_out" />
+        <item
+            android:id="@+id/action_recipe_prefs"
+            android:icon="@android:drawable/ic_menu_save"
+            android:title="@string/action_preferences" />
+        <item
+            android:id="@+id/action_settings"
+            android:icon="@android:drawable/ic_menu_preferences"
+            android:title="@string/action_settings" />
+        <item
+            android:id="@+id/action_about"
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:title="@string/action_about" />
+    </group>
+</menu>

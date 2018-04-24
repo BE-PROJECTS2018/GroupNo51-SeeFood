@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ubuntu.seefood.ListActivity">
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/content_list" />
+
+    <!--
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        app:srcCompat="@android:drawable/ic_menu_view" />
+        -->
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/left_labels"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="left">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/edit_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@android:drawable/ic_menu_edit"
+            fab:fab_title="Add to the list" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/detect_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@android:drawable/ic_menu_view"
+            fab:fab_size="normal"
+            fab:fab_title="Detect Again" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fetch_recipe_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@android:drawable/ic_menu_search"
+            fab:fab_size="normal"
+            fab:fab_title="Fetch recipes" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fetch_sample_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@android:drawable/ic_menu_directions"
+            fab:fab_size="normal"
+            fab:fab_title="Sample call" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+</RelativeLayout>

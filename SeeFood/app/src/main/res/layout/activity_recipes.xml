@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.ubuntu.seefood.recipes.RecipesActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sample Call (Does not use api, uses sample json response from docs)"
+            android:textSize="24sp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClickShowResults"
+            android:text="Sample Call" />
+
+        <EditText
+            android:id="@+id/allowedIngridientList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ingridients (CSV)" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Allowed Allergies(Only include recipes whose ingridients are allowed for that allergy)"
+            android:textSize="24sp" />
+
+        <CheckBox
+            android:id="@+id/dairy_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dairy" />
+
+        <CheckBox
+            android:id="@+id/egg_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Egg" />
+
+        <CheckBox
+            android:id="@+id/gluten_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gluten" />
+
+        <CheckBox
+            android:id="@+id/peanut_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Peanut" />
+
+        <CheckBox
+            android:id="@+id/seafood_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seafood" />
+
+        <CheckBox
+            android:id="@+id/sesame_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sesame" />
+
+        <CheckBox
+            android:id="@+id/soy_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Soy" />
+
+        <CheckBox
+            android:id="@+id/tree_nut_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tree Nut" />
+
+        <CheckBox
+            android:id="@+id/wheat_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wheat" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Allowed Diet (Only include recipes whose ingridients are allowed for that diet)"
+            android:textSize="24sp" />
+
+        <CheckBox
+            android:id="@+id/lacto_vegetarian_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lacto Vegetarian" />
+
+        <CheckBox
+            android:id="@+id/ovo_vegetarian_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ovo vegetarian" />
+
+        <CheckBox
+            android:id="@+id/pescetarian_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pescetarian" />
+
+        <CheckBox
+            android:id="@+id/vegan_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vegan" />
+
+        <CheckBox
+            android:id="@+id/vegetarain_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vegetarian" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Allowed Cuisines (only include recipes with that cuisine)"
+            android:textSize="24sp" />
+
+        <CheckBox
+            android:id="@+id/American_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="American" />
+
+        <CheckBox
+            android:id="@+id/Italian_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Italian" />
+
+        <CheckBox
+            android:id="@+id/Asian_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Asian" />
+
+        <CheckBox
+            android:id="@+id/Mexican_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mexican" />
+
+        <CheckBox
+            android:id="@+id/Indian_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Indian" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Allowed Courses (only include recipes with that course)"
+            android:textSize="24sp" />
+
+        <CheckBox
+            android:id="@+id/main_dishes_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Main Dishes" />
+
+        <CheckBox
+            android:id="@+id/Desserts_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Desserts" />
+
+        <CheckBox
+            android:id="@+id/side_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Side Dishes" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total time (Search for recipes that do not exceed a specified max total cook + prep time in seconds.)"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/total_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="enter seconds (enter only integer, leave empty if no time constraint)" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickSearchYummlyApi"
+            android:text="Search Yummly Api" />
+
+    </LinearLayout>
+
+
+</ScrollView>
